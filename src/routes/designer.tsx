@@ -91,7 +91,7 @@ function DesignerPage() {
   const pickTemplate = (t: StoreTemplate) => {
     setSlug(t.slug);
     setTagline(t.tagline);
-    setAccent(swatches[0]);
+    setAccent(swatches[0]!);
     setFont(fonts.find((f) => t.theme.fontDisplay.startsWith(`"${f.label}`)) ?? fonts[0]!);
     setHeroLayout(t.slug === "lagos" ? "overlay" : "split");
   };
