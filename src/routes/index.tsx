@@ -123,7 +123,7 @@ function Hero() {
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Button asChild size="lg" className="h-12 px-7 text-base">
-              <Link to="/designer">
+              <Link to="/designer" search={{ template: undefined }}>
                 Open your store — free <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
@@ -317,7 +317,7 @@ function DesignerTeaser() {
             ))}
           </ul>
           <Button asChild size="lg" className="mt-10 h-12 px-7 text-base">
-            <Link to="/designer">
+            <Link to="/designer" search={{ template: undefined }}>
               Open the store designer <Palette className="h-4 w-4" />
             </Link>
           </Button>
@@ -467,7 +467,7 @@ function Plans() {
                       : "border-ink-line bg-transparent text-ink-foreground hover:bg-ink-line hover:text-ink-foreground")
                   }
                 >
-                  <Link to="/designer">{p.cta}</Link>
+                  <Link to="/designer" search={{ template: undefined }}>{p.cta}</Link>
                 </Button>
               </div>
             );
@@ -524,7 +524,7 @@ function FinalCta() {
           Free forever plan · Your store live in 2 minutes · No card needed.
         </p>
         <Button asChild size="lg" className="mt-8 h-12 bg-ink px-8 text-base text-ink-foreground hover:bg-ink-deep">
-          <Link to="/designer">
+          <Link to="/designer" search={{ template: undefined }}>
             Open your store <ArrowRight className="h-4 w-4" />
           </Link>
         </Button>

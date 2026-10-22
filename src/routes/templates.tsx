@@ -98,7 +98,7 @@ function TemplatesPage() {
         <div className="mt-12 rounded-xl border bg-card p-6 text-center text-sm text-muted-foreground">
           Every design is a starting point — change the colors, type, layout and
           sections in the{" "}
-          <Link to="/designer" className="font-semibold text-primary underline underline-offset-4">
+          <Link to="/designer" search={{ template: undefined }} className="font-semibold text-primary underline underline-offset-4">
             store designer
           </Link>
           .
