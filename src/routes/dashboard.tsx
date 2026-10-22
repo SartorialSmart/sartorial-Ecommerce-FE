@@ -158,7 +158,7 @@ function DashboardPage() {
           </div>
           <div className="flex gap-3">
             <Button asChild variant="outline">
-              <Link to="/designer" search={{ }}>View storefront</Link>
+              <Link to="/designer" search={{ template: undefined }}>View storefront</Link>
             </Button>
             <Button onClick={() => toast.success("Product draft created", { description: "Continue in Products → Drafts." })}>
               <Plus className="h-4 w-4" /> Add product
@@ -334,7 +334,7 @@ function DashboardPage() {
                   <Package className="h-4 w-4" /> Fulfill orders
                 </Button>
                 <Button asChild variant="secondary" className="h-auto flex-col gap-1 py-3 text-xs">
-                  <Link to="/designer" search={{ }}>
+                  <Link to="/designer" search={{ template: undefined }}>
                     <ChevronUp className="h-4 w-4" /> Open designer
                   </Link>
                 </Button>

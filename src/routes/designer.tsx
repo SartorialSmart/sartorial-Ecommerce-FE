@@ -18,7 +18,7 @@ import {
 
 export const Route = createFileRoute("/designer")({
   validateSearch: (search: Record<string, unknown>) => ({
-    template: typeof search.template === "string" ? search.template : undefined,
+    template: typeof search["template"] === "string" ? search["template"] : undefined,
   }),
   head: () => ({
     meta: [
