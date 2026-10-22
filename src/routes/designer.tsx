@@ -54,6 +54,7 @@ const swatches = [
 ];
 
 const fonts = [
+  { label: "Outfit", value: '"Outfit", sans-serif' },
   { label: "Syne", value: '"Syne", sans-serif' },
   { label: "Fraunces", value: '"Fraunces", serif' },
   { label: "Space Grotesk", value: '"Space Grotesk", sans-serif' },
@@ -73,13 +74,13 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
 function DesignerPage() {
   const search = Route.useSearch();
   const [slug, setSlug] = useState<TemplateSlug>(
-    getTemplate(search.template)?.slug ?? "loom",
+    getTemplate(search["template"])?.slug ?? "loom",
   );
   const template = getTemplate(slug) as StoreTemplate;
   const [storeName, setStoreName] = useState("Ade Stitches");
   const [tagline, setTagline] = useState(template.tagline);
-  const [accent, setAccent] = useState(swatches[0]);
-  const [font, setFont] = useState(fonts[0]);
+  const [accent, setAccent] = useState(swatches[0]!);
+  const [font, setFont] = useState(fonts[0]!);
   const [heroLayout, setHeroLayout] = useState<"split" | "overlay">("split");
   const [showAnnouncement, setShowAnnouncement] = useState(true);
   const [showMarquee, setShowMarquee] = useState(true);
@@ -91,7 +92,7 @@ function DesignerPage() {
     setSlug(t.slug);
     setTagline(t.tagline);
     setAccent(swatches[0]);
-    setFont(fonts.find((f) => t.theme.fontDisplay.startsWith(`"${f.label}`)) ?? fonts[0]);
+    setFont(fonts.find((f) => t.theme.fontDisplay.startsWith(`"${f.label}`)) ?? fonts[0]!);
     setHeroLayout(t.slug === "lagos" ? "overlay" : "split");
   };
 

@@ -15,7 +15,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 const FONTS_URL =
-  "https://fonts.googleapis.com/css2?family=Syne:wght@400..800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@300..700&display=swap";
+  "https://fonts.googleapis.com/css2?family=Outfit:wght@300..800&family=Syne:wght@400..800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@300..700&display=swap";
 
 function NotFoundComponent() {
   return (

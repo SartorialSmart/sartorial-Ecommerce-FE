@@ -36,7 +36,7 @@ export function SiteNav() {
         </nav>
         <div className="hidden items-center gap-3 md:flex">
           <Button asChild>
-            <Link to="/designer">Open your store</Link>
+            <Link to="/designer" search={{ }}>Open your store</Link>
           </Button>
         </div>
         <button
@@ -65,7 +65,7 @@ export function SiteNav() {
               </Link>
             ))}
             <Button asChild onClick={() => setOpen(false)}>
-              <Link to="/designer">Open your store</Link>
+              <Link to="/designer" search={{ }}>Open your store</Link>
             </Button>
           </div>
         </div>
