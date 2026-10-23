@@ -1,14 +1,18 @@
-# Welcome to your Lovable project
+# Satorial Ecommerce
+
+Using the attached logo for inspiration and themes, design a Shopify clone for African Fashion Designers called Sartorial eCommerce. Include shop owner dashboard, include website designer for users, include default storefront designs, include plans on the landing page, be modernistic, be creative, add details I missed.
 
 This project was built with [Lovable](https://lovable.dev).
 
+**Live app**: https://satorial-ecommerce.lovable.app
+
 ## Build with Lovable
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/018f9b3e-40ad-48d4-adc8-91db7ffd9337).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
@@ -20,10 +24,3 @@ cd <repository-name>
 npm i
 npm run dev
 ```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
