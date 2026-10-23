@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { lowStock, recentOrders, revenueSeries, salesChannels, type Order } from "@/data/catalog";
+import { formatCompactCurrency, formatCurrency } from "@/lib/currency";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -77,7 +78,7 @@ const channelBars = ["bg-chart-1", "bg-chart-2", "bg-chart-3", "bg-chart-4"];
 const stats = [
   {
     label: "Revenue · this month",
-    value: "$48,930",
+    value: formatCompactCurrency(64812835),
     delta: "+18.2%",
     up: true,
     note: "vs last month",
@@ -91,7 +92,7 @@ const stats = [
   },
   {
     label: "Avg. order value",
-    value: "$37.50",
+    value: formatCompactCurrency(49673),
     delta: "−2.1%",
     up: false,
     note: "vs last month",
@@ -248,6 +249,7 @@ function DashboardPage() {
                           axisLine={false}
                           fontSize={11}
                           stroke="var(--muted-foreground)"
+                          tickFormatter={(v) => formatCompactCurrency(Number(v))}
                         />
                         <Tooltip
                           contentStyle={{
@@ -256,7 +258,7 @@ function DashboardPage() {
                             borderRadius: 8,
                             fontSize: 12,
                           }}
-                          formatter={(v) => [`$${Number(v).toLocaleString()}`, "Revenue"]}
+                          formatter={(v) => [formatCurrency(Number(v)), "Revenue"]}
                         />
                         <Area
                           type="monotone"
@@ -323,7 +325,7 @@ function DashboardPage() {
                           {o.channel}
                         </TableCell>
                         <TableCell className="text-right text-sm font-semibold">
-                          ${o.total}
+                          {formatCurrency(o.total)}
                         </TableCell>
                         <TableCell className="text-right">
                           <span

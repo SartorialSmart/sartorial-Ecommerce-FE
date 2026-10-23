@@ -23,6 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { plans } from "@/data/catalog";
+import { currencies, DEFAULT_CURRENCY, formatCurrency } from "@/lib/currency";
 
 function Panel({
   title,
@@ -54,9 +55,9 @@ const paymentMethods = [
 ];
 
 const deliveryZones = [
-  { zone: "Lagos — next-day courier", price: "₦3,500 flat", on: true },
-  { zone: "Pan-African — 3 to 5 days", price: "from $12", on: true },
-  { zone: "Worldwide — 5 to 9 days", price: "from $28", on: false },
+  { zone: "Lagos — next-day courier", price: `${formatCurrency(3500)} flat`, on: true },
+  { zone: "Pan-African — 3 to 5 days", price: `from ${formatCurrency(15895)}`, on: true },
+  { zone: "Worldwide — 5 to 9 days", price: `from ${formatCurrency(37089)}`, on: false },
 ];
 
 export function StoreSettingsTab() {
@@ -94,15 +95,16 @@ export function StoreSettingsTab() {
           </div>
           <div className="space-y-1.5">
             <Label>Currency</Label>
-            <Select defaultValue="USD">
+            <Select defaultValue={DEFAULT_CURRENCY}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="USD">USD — US dollar</SelectItem>
-                <SelectItem value="NGN">NGN — Nigerian naira</SelectItem>
-                <SelectItem value="GHS">GHS — Ghanaian cedi</SelectItem>
-                <SelectItem value="KES">KES — Kenyan shilling</SelectItem>
+                {currencies.map((c) => (
+                  <SelectItem key={c.value} value={c.value}>
+                    {c.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -195,10 +197,10 @@ export function StoreSettingsTab() {
 /* ============================== Plan & billing ============================== */
 
 const invoices = [
-  { date: "Jan 22, 2026", plan: "Aso-Òkè — monthly", amount: "$29.00", status: "Paid" },
-  { date: "Dec 22, 2025", plan: "Aso-Òkè — monthly", amount: "$29.00", status: "Paid" },
-  { date: "Nov 22, 2025", plan: "Ankara — free", amount: "$0.00", status: "Paid" },
-  { date: "Oct 22, 2025", plan: "Ankara — free", amount: "$0.00", status: "Paid" },
+  { date: "Jan 22, 2026", plan: "Aso-Òkè — monthly", amount: 38413, status: "Paid" },
+  { date: "Dec 22, 2025", plan: "Aso-Òkè — monthly", amount: 38413, status: "Paid" },
+  { date: "Nov 22, 2025", plan: "Ankara — free", amount: 0, status: "Paid" },
+  { date: "Oct 22, 2025", plan: "Ankara — free", amount: 0, status: "Paid" },
 ];
 
 export function PlanBillingTab() {
@@ -222,7 +224,7 @@ export function PlanBillingTab() {
             </div>
             <div className="text-right">
               <p className="font-display text-3xl font-bold">
-                {price === 0 ? "Free" : `$${price}`}
+                {price === 0 ? "Free" : formatCurrency(price)}
                 {price > 0 && (
                   <span className="text-sm font-medium text-muted-foreground">
                     /{cycle === "monthly" ? "mo" : "mo, billed yearly"}
@@ -289,7 +291,7 @@ export function PlanBillingTab() {
                   )}
                 </div>
                 <p className="mt-2 font-display text-3xl font-bold">
-                  {pPrice === 0 ? "Free" : `$${pPrice}`}
+                  {pPrice === 0 ? "Free" : formatCurrency(pPrice)}
                   {pPrice > 0 && (
                     <span className="text-xs font-medium text-muted-foreground">/mo</span>
                   )}
@@ -339,7 +341,9 @@ export function PlanBillingTab() {
               <TableRow key={inv.date}>
                 <TableCell className="text-sm">{inv.date}</TableCell>
                 <TableCell className="text-sm text-muted-foreground">{inv.plan}</TableCell>
-                <TableCell className="text-right text-sm font-semibold">{inv.amount}</TableCell>
+                <TableCell className="text-right text-sm font-semibold">
+                  {formatCurrency(inv.amount)}
+                </TableCell>
                 <TableCell className="text-right">
                   <Badge variant="secondary" className="bg-leaf/15 text-leaf">
                     {inv.status}

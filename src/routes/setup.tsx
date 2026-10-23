@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { plans, templates, type TemplateSlug } from "@/data/catalog";
+import { currencies, DEFAULT_CURRENCY, formatCurrency, type CurrencyCode } from "@/lib/currency";
 
 export const Route = createFileRoute("/setup")({
   head: () => ({
@@ -80,7 +81,7 @@ function SetupPage() {
   const [storeName, setStoreName] = useState("Ade Stitches");
   const [tagline, setTagline] = useState("Handwoven heritage, gallery-lit.");
   const [city, setCity] = useState(cities[0]!);
-  const [currency, setCurrency] = useState("USD");
+  const [currency, setCurrency] = useState<CurrencyCode>(DEFAULT_CURRENCY);
   const [category, setCategory] = useState("Womenswear");
 
   const [slug, setSlug] = useState<TemplateSlug>("loom");
@@ -190,15 +191,19 @@ function SetupPage() {
                 </div>
                 <div className="space-y-1.5">
                   <Label>Currency</Label>
-                  <Select value={currency} onValueChange={setCurrency}>
+                  <Select
+                    value={currency}
+                    onValueChange={(value) => setCurrency(value as CurrencyCode)}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="USD">USD — US dollar</SelectItem>
-                      <SelectItem value="NGN">NGN — Nigerian naira</SelectItem>
-                      <SelectItem value="GHS">GHS — Ghanaian cedi</SelectItem>
-                      <SelectItem value="KES">KES — Kenyan shilling</SelectItem>
+                      {currencies.map((c) => (
+                        <SelectItem key={c.value} value={c.value}>
+                          {c.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -383,7 +388,7 @@ function SetupPage() {
                           {p.id === planId && <Check className="h-4 w-4 text-primary" />}
                         </div>
                         <p className="mt-1 font-display text-2xl font-bold">
-                          {p.monthly === 0 ? "Free" : `$${p.monthly}`}
+                          {p.monthly === 0 ? "Free" : formatCurrency(p.monthly)}
                           {p.monthly > 0 && (
                             <span className="text-xs font-medium text-muted-foreground">/mo</span>
                           )}

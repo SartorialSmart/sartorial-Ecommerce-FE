@@ -2,6 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { Instagram, Twitter, Youtube } from "lucide-react";
 
 import { Logo } from "@/components/brand/logo";
+import { plans } from "@/data/catalog";
+import { formatCurrency } from "@/lib/currency";
 
 const columns = [
   {
@@ -67,9 +69,11 @@ export function SiteFooter() {
           <div>
             <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-ink-muted">Plans</h3>
             <ul className="mt-4 space-y-2.5 text-sm text-ink-foreground/80">
-              <li>Ankara — free forever</li>
-              <li>Aso-Òkè — $29/mo</li>
-              <li>Maison — $79/mo</li>
+              {plans.map((p) => (
+                <li key={p.id}>
+                  {p.name} — {p.monthly === 0 ? "free forever" : `${formatCurrency(p.monthly)}/mo`}
+                </li>
+              ))}
             </ul>
           </div>
         </div>

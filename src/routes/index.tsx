@@ -19,6 +19,7 @@ import { SiteNav } from "@/components/site/nav";
 import { SiteFooter } from "@/components/site/footer";
 import { Button } from "@/components/ui/button";
 import { heroImage, plans, templates, testimonials, textileWords } from "@/data/catalog";
+import { formatCurrency } from "@/lib/currency";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -157,7 +158,7 @@ function Hero() {
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-leaf" />
             </span>
             <div className="text-xs">
-              <p className="font-bold">New order · $640</p>
+              <p className="font-bold">New order · {formatCurrency(847746)}</p>
               <p className="text-muted-foreground">Red Agbada Gown → Lagos</p>
             </div>
           </div>
@@ -427,7 +428,9 @@ function Plans() {
                 <h3 className="font-display text-xl font-bold">{p.name}</h3>
                 <p className="mt-1 text-sm text-ink-muted">{p.tagline}</p>
                 <div className="mt-6 flex items-baseline gap-1.5">
-                  <span className="font-display text-5xl font-extrabold">${price}</span>
+                  <span className="font-display text-5xl font-extrabold">
+                    {formatCurrency(price)}
+                  </span>
                   <span className="text-sm text-ink-muted">
                     /month{billing === "annual" && price > 0 ? ", billed annually" : ""}
                   </span>

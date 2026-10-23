@@ -1,6 +1,7 @@
 import { ArrowRight, Menu, ShoppingBag, Star } from "lucide-react";
 
 import { productsFor, textileWords, type StoreTemplate } from "@/data/catalog";
+import { formatCurrency } from "@/lib/currency";
 
 export interface StorefrontOverrides {
   storeName?: string;
@@ -49,7 +50,7 @@ export function StorefrontView({
           className="px-4 py-2 text-center text-[11px] font-semibold uppercase tracking-[0.18em]"
           style={{ background: accent, color: accentFg }}
         >
-          Free delivery over $150 · Ships worldwide · Made to order
+          Free delivery over {formatCurrency(198690)} · Ships worldwide · Made to order
         </div>
       )}
 
@@ -219,7 +220,7 @@ export function StorefrontView({
                 </p>
                 <h3 className="mt-1 text-sm font-semibold leading-snug">{p.name}</h3>
                 <div className="mt-2 flex items-center justify-between">
-                  <span className="text-sm font-bold">${p.price}</span>
+                  <span className="text-sm font-bold">{formatCurrency(p.price)}</span>
                   <button
                     className="rounded px-2.5 py-1.5 text-[11px] font-semibold"
                     style={{ background: accent, color: accentFg }}
