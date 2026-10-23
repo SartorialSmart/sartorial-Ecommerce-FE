@@ -34,9 +34,15 @@ export function SiteNav() {
             </Link>
           ))}
         </nav>
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-4 md:flex">
+          <Link
+            to="/login"
+            className="text-sm font-medium text-ink-foreground/75 transition-colors hover:text-ink-foreground"
+          >
+            Sign in
+          </Link>
           <Button asChild>
-            <Link to="/designer" search={{ template: undefined }}>Open your store</Link>
+            <Link to="/signup">Open your store</Link>
           </Button>
         </div>
         <button
@@ -64,8 +70,15 @@ export function SiteNav() {
                 {l.label}
               </Link>
             ))}
+            <Link
+              to="/login"
+              onClick={() => setOpen(false)}
+              className="text-sm font-medium text-ink-foreground/75"
+            >
+              Sign in
+            </Link>
             <Button asChild onClick={() => setOpen(false)}>
-              <Link to="/designer" search={{ template: undefined }}>Open your store</Link>
+              <Link to="/signup">Open your store</Link>
             </Button>
           </div>
         </div>
