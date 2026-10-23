@@ -11,9 +11,16 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
     meta: [
-      { title: "Reset your password — Sartorial", name: "description", content: "Request a password reset link for your Sartorial store account." },
+      {
+        title: "Reset your password — Sartorial",
+        name: "description",
+        content: "Request a password reset link for your Sartorial store account.",
+      },
       { property: "og:title", content: "Reset your password — Sartorial" },
-      { property: "og:description", content: "Request a password reset link for your Sartorial store account." },
+      {
+        property: "og:description",
+        content: "Request a password reset link for your Sartorial store account.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -46,8 +53,9 @@ function ForgotPasswordPage() {
           <div>
             <p className="font-display text-lg font-bold">Check your inbox</p>
             <p className="mt-2 text-sm text-muted-foreground">
-              We sent a password reset link to <span className="font-semibold text-foreground">{email}</span>.
-              It expires in 60 minutes.
+              We sent a password reset link to{" "}
+              <span className="font-semibold text-foreground">{email}</span>. It expires in 60
+              minutes.
             </p>
           </div>
           <Button variant="outline" className="w-full" onClick={() => setSent(false)}>
@@ -77,8 +85,8 @@ function ForgotPasswordPage() {
             Send reset link <ArrowRight className="h-4 w-4" />
           </Button>
           <p className="text-center text-xs text-muted-foreground">
-            Tip: the link opens a page where you set the new password — nothing is changed until
-            you confirm there.
+            Tip: the link opens a page where you set the new password — nothing is changed until you
+            confirm there.
           </p>
         </form>
       )}

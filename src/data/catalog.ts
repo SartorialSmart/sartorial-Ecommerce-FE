@@ -277,12 +277,54 @@ export interface Order {
 }
 
 export const recentOrders: Order[] = [
-  { id: "#10241", customer: "Zainab O.", item: "Red Agbada Couture Gown", total: 640, status: "In production", channel: "Instagram" },
-  { id: "#10240", customer: "Kwame A.", item: "Adire Kimono Jacket", total: 150, status: "Fulfilled", channel: "Storefront" },
-  { id: "#10239", customer: "Naledi M.", item: "Kente Mermaid Gown", total: 720, status: "Shipped", channel: "Marketplace" },
-  { id: "#10238", customer: "Tunde F.", item: "Embroidered Ilé Kaftan", total: 95, status: "Fulfilled", channel: "Storefront" },
-  { id: "#10237", customer: "Amara N.", item: "Sankofa Ankara Bomber", total: 185, status: "Awaiting payment", channel: "WhatsApp" },
-  { id: "#10236", customer: "Fatima S.", item: "Ruby & Brass Couture Set", total: 120, status: "Fulfilled", channel: "Marketplace" },
+  {
+    id: "#10241",
+    customer: "Zainab O.",
+    item: "Red Agbada Couture Gown",
+    total: 640,
+    status: "In production",
+    channel: "Instagram",
+  },
+  {
+    id: "#10240",
+    customer: "Kwame A.",
+    item: "Adire Kimono Jacket",
+    total: 150,
+    status: "Fulfilled",
+    channel: "Storefront",
+  },
+  {
+    id: "#10239",
+    customer: "Naledi M.",
+    item: "Kente Mermaid Gown",
+    total: 720,
+    status: "Shipped",
+    channel: "Marketplace",
+  },
+  {
+    id: "#10238",
+    customer: "Tunde F.",
+    item: "Embroidered Ilé Kaftan",
+    total: 95,
+    status: "Fulfilled",
+    channel: "Storefront",
+  },
+  {
+    id: "#10237",
+    customer: "Amara N.",
+    item: "Sankofa Ankara Bomber",
+    total: 185,
+    status: "Awaiting payment",
+    channel: "WhatsApp",
+  },
+  {
+    id: "#10236",
+    customer: "Fatima S.",
+    item: "Ruby & Brass Couture Set",
+    total: 120,
+    status: "Fulfilled",
+    channel: "Marketplace",
+  },
 ];
 
 export const revenueSeries = [

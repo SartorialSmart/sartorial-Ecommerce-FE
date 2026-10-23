@@ -8,11 +8,10 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 
 const FONTS_URL =
   "https://fonts.googleapis.com/css2?family=Outfit:wght@300..800&family=Syne:wght@400..800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@300..700&display=swap";
@@ -43,16 +42,11 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-ink px-4 text-ink-foreground">
       <div className="max-w-md text-center">
-        <h1 className="font-display text-xl font-semibold tracking-tight">
-          This page didn't load
-        </h1>
+        <h1 className="font-display text-xl font-semibold tracking-tight">This page didn't load</h1>
         <p className="mt-2 text-sm text-ink-muted">
           Something went wrong on our end. You can try refreshing or head back home.
         </p>
@@ -84,9 +78,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Sartorial — eCommerce for African Fashion" },
-      { name: "description", content: "Open a fashion storefront, design it your way, and sell across Africa and the world." },
+      {
+        name: "description",
+        content:
+          "Open a fashion storefront, design it your way, and sell across Africa and the world.",
+      },
       { property: "og:title", content: "Sartorial — eCommerce for African Fashion" },
-      { property: "og:description", content: "Open a fashion storefront, design it your way, and sell across Africa and the world." },
+      {
+        property: "og:description",
+        content:
+          "Open a fashion storefront, design it your way, and sell across Africa and the world.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

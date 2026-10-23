@@ -10,9 +10,16 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
-      { title: "Create your store — Sartorial", name: "description", content: "Open a free Sartorial storefront for your fashion label in minutes." },
+      {
+        title: "Create your store — Sartorial",
+        name: "description",
+        content: "Open a free Sartorial storefront for your fashion label in minutes.",
+      },
       { property: "og:title", content: "Create your store — Sartorial" },
-      { property: "og:description", content: "Open a free Sartorial storefront for your fashion label in minutes." },
+      {
+        property: "og:description",
+        content: "Open a free Sartorial storefront for your fashion label in minutes.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -62,7 +69,13 @@ function SignupPage() {
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" required minLength={8} placeholder="At least 8 characters" />
+          <Input
+            id="password"
+            type="password"
+            required
+            minLength={8}
+            placeholder="At least 8 characters"
+          />
           <p className="text-xs text-muted-foreground">
             Use 8+ characters with a mix of letters, numbers and symbols.
           </p>

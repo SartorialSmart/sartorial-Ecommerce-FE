@@ -20,9 +20,16 @@ import { plans, templates, type TemplateSlug } from "@/data/catalog";
 export const Route = createFileRoute("/setup")({
   head: () => ({
     meta: [
-      { title: "Store setup — Sartorial", name: "description", content: "Set up your Sartorial storefront in four quick steps." },
+      {
+        title: "Store setup — Sartorial",
+        name: "description",
+        content: "Set up your Sartorial storefront in four quick steps.",
+      },
       { property: "og:title", content: "Store setup — Sartorial" },
-      { property: "og:description", content: "Set up your Sartorial storefront in four quick steps." },
+      {
+        property: "og:description",
+        content: "Set up your Sartorial storefront in four quick steps.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -205,7 +212,9 @@ function SetupPage() {
                       <SelectItem value="Womenswear">Womenswear</SelectItem>
                       <SelectItem value="Menswear">Menswear</SelectItem>
                       <SelectItem value="Unisex">Unisex</SelectItem>
-                      <SelectItem value="Accessories & jewellery">Accessories &amp; jewellery</SelectItem>
+                      <SelectItem value="Accessories & jewellery">
+                        Accessories &amp; jewellery
+                      </SelectItem>
                       <SelectItem value="Fabrics & textiles">Fabrics &amp; textiles</SelectItem>
                     </SelectContent>
                   </Select>
@@ -245,7 +254,10 @@ function SetupPage() {
                     <p className="text-xs text-muted-foreground">{t.mood}</p>
                     <ul className="mt-3 space-y-1.5">
                       {t.highlights.map((h) => (
-                        <li key={h} className="flex items-start gap-1.5 text-xs text-muted-foreground">
+                        <li
+                          key={h}
+                          className="flex items-start gap-1.5 text-xs text-muted-foreground"
+                        >
                           <Check className="mt-0.5 h-3 w-3 shrink-0 text-primary" />
                           {h}
                         </li>
@@ -341,7 +353,9 @@ function SetupPage() {
                     <Input
                       id="domain"
                       value={domain}
-                      onChange={(e) => setDomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"))}
+                      onChange={(e) =>
+                        setDomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"))
+                      }
                       className="rounded-none border-0"
                     />
                   </div>
@@ -370,7 +384,9 @@ function SetupPage() {
                         </div>
                         <p className="mt-1 font-display text-2xl font-bold">
                           {p.monthly === 0 ? "Free" : `$${p.monthly}`}
-                          {p.monthly > 0 && <span className="text-xs font-medium text-muted-foreground">/mo</span>}
+                          {p.monthly > 0 && (
+                            <span className="text-xs font-medium text-muted-foreground">/mo</span>
+                          )}
                         </p>
                         <p className="mt-1 text-xs text-muted-foreground">{p.tagline}</p>
                       </button>
@@ -391,7 +407,10 @@ function SetupPage() {
               <ArrowLeft className="h-4 w-4" /> Back
             </Button>
             {step < STEPS.length - 1 ? (
-              <Button type="button" onClick={() => setStep((s) => Math.min(STEPS.length - 1, s + 1))}>
+              <Button
+                type="button"
+                onClick={() => setStep((s) => Math.min(STEPS.length - 1, s + 1))}
+              >
                 Continue <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (

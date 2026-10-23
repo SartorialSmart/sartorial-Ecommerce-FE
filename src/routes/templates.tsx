@@ -44,9 +44,8 @@ function TemplatesPage() {
             Never start from a blank page.
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            Each design ships finished — typography, colors, hero, product grid and
-            copy rhythm already styled. Preview one live, then tailor it in the store
-            designer.
+            Each design ships finished — typography, colors, hero, product grid and copy rhythm
+            already styled. Preview one live, then tailor it in the store designer.
           </p>
         </div>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
@@ -96,9 +95,12 @@ function TemplatesPage() {
           ))}
         </div>
         <div className="mt-12 rounded-xl border bg-card p-6 text-center text-sm text-muted-foreground">
-          Every design is a starting point — change the colors, type, layout and
-          sections in the{" "}
-          <Link to="/designer" search={{ template: undefined }} className="font-semibold text-primary underline underline-offset-4">
+          Every design is a starting point — change the colors, type, layout and sections in the{" "}
+          <Link
+            to="/designer"
+            search={{ template: undefined }}
+            className="font-semibold text-primary underline underline-offset-4"
+          >
             store designer
           </Link>
           .

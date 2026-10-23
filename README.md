@@ -1,26 +1,33 @@
 # Satorial Ecommerce
 
-Using the attached logo for inspiration and themes, design a Shopify clone for African Fashion Designers called Sartorial eCommerce. Include shop owner dashboard, include website designer for users, include default storefront designs, include plans on the landing page, be modernistic, be creative, add details I missed.
+Sartorial eCommerce is a storefront platform for African fashion designers. It includes a shop-owner dashboard, a website designer, default storefront templates, and subscription plans on the landing page.
 
-This project was built with [Lovable](https://lovable.dev).
+## Stack
 
-**Live app**: https://satorial-ecommerce.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/018f9b3e-40ad-48d4-adc8-91db7ffd9337).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+- TanStack Start and TanStack Router
+- React 19
+- Vite
+- Tailwind CSS
+- shadcn/ui
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Requires Node.js 22+ and npm (or Bun 1.4+).
 
 ```sh
 git clone <this-repository-url>
 cd <repository-name>
-npm i
+npm install
 npm run dev
 ```
+
+The development server runs at http://localhost:8080.
+
+## Scripts
+
+- `npm run dev` — start the development server
+- `npm run build` — build for production
+- `npm run preview` — preview the production build
+- `npm run lint` — run ESLint
+- `npm run format` — format with Prettier
+- `npm run test` — run the Vitest suite

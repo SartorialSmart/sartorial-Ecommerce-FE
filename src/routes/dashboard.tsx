@@ -23,11 +23,7 @@ import {
 import { toast } from "sonner";
 
 import { Logo } from "@/components/brand/logo";
-import {
-  PlanBillingTab,
-  StoreSettingsTab,
-  TeamTab,
-} from "@/components/dashboard/dashboard-tabs";
+import { PlanBillingTab, StoreSettingsTab, TeamTab } from "@/components/dashboard/dashboard-tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -46,13 +42,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  lowStock,
-  recentOrders,
-  revenueSeries,
-  salesChannels,
-  type Order,
-} from "@/data/catalog";
+import { lowStock, recentOrders, revenueSeries, salesChannels, type Order } from "@/data/catalog";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -66,8 +56,7 @@ export const Route = createFileRoute("/dashboard")({
       { property: "og:title", content: "Shop Owner Dashboard — Sartorial" },
       {
         property: "og:description",
-        content:
-          "Track revenue, orders, inventory and sales channels for your fashion label.",
+        content: "Track revenue, orders, inventory and sales channels for your fashion label.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -142,10 +131,7 @@ function DashboardPage() {
             Search orders, products…
           </div>
           <div className="flex items-center gap-3">
-            <button
-              className="rounded-md p-2 hover:bg-ink-line"
-              aria-label="Notifications"
-            >
+            <button className="rounded-md p-2 hover:bg-ink-line" aria-label="Notifications">
               <Bell className="h-4.5 w-4.5" />
             </button>
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
@@ -167,9 +153,17 @@ function DashboardPage() {
           </div>
           <div className="flex gap-3">
             <Button asChild variant="outline">
-              <Link to="/designer" search={{ template: undefined }}>View storefront</Link>
+              <Link to="/designer" search={{ template: undefined }}>
+                View storefront
+              </Link>
             </Button>
-            <Button onClick={() => toast.success("Product draft created", { description: "Continue in Products → Drafts." })}>
+            <Button
+              onClick={() =>
+                toast.success("Product draft created", {
+                  description: "Continue in Products → Drafts.",
+                })
+              }
+            >
               <Plus className="h-4 w-4" /> Add product
             </Button>
           </div>
@@ -198,7 +192,9 @@ function DashboardPage() {
                 ) : (
                   <TrendingDown className="h-3.5 w-3.5 text-destructive" />
                 )}
-                <span className={s.up ? "font-semibold text-leaf" : "font-semibold text-destructive"}>
+                <span
+                  className={s.up ? "font-semibold text-leaf" : "font-semibold text-destructive"}
+                >
                   {s.delta}
                 </span>
                 <span className="text-muted-foreground">{s.note}</span>
@@ -225,16 +221,34 @@ function DashboardPage() {
                 <div className="mt-4 h-72">
                   {mounted ? (
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={revenueSeries} margin={{ top: 8, right: 8, bottom: 0, left: -18 }}>
+                      <AreaChart
+                        data={revenueSeries}
+                        margin={{ top: 8, right: 8, bottom: 0, left: -18 }}
+                      >
                         <defs>
                           <linearGradient id="revFill" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.35} />
                             <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0.02} />
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                        <XAxis dataKey="week" tickLine={false} axisLine={false} fontSize={11} stroke="var(--muted-foreground)" />
-                        <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="var(--muted-foreground)" />
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          stroke="var(--border)"
+                          vertical={false}
+                        />
+                        <XAxis
+                          dataKey="week"
+                          tickLine={false}
+                          axisLine={false}
+                          fontSize={11}
+                          stroke="var(--muted-foreground)"
+                        />
+                        <YAxis
+                          tickLine={false}
+                          axisLine={false}
+                          fontSize={11}
+                          stroke="var(--muted-foreground)"
+                        />
                         <Tooltip
                           contentStyle={{
                             background: "var(--card)",
@@ -312,7 +326,9 @@ function DashboardPage() {
                           ${o.total}
                         </TableCell>
                         <TableCell className="text-right">
-                          <span className={`inline-block rounded-md px-2 py-1 text-[11px] font-semibold ${statusStyles[o.status]}`}>
+                          <span
+                            className={`inline-block rounded-md px-2 py-1 text-[11px] font-semibold ${statusStyles[o.status]}`}
+                          >
                             {o.status}
                           </span>
                         </TableCell>
@@ -369,7 +385,11 @@ function DashboardPage() {
                     >
                       <Crown className="h-4 w-4" /> Upgrade plan
                     </Button>
-                    <Button asChild variant="secondary" className="h-auto flex-col gap-1 py-3 text-xs">
+                    <Button
+                      asChild
+                      variant="secondary"
+                      className="h-auto flex-col gap-1 py-3 text-xs"
+                    >
                       <Link to="/designer" search={{ template: undefined }}>
                         <ChevronUp className="h-4 w-4" /> Open designer
                       </Link>

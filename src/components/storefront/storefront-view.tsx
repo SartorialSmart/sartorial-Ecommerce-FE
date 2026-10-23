@@ -100,8 +100,7 @@ export function StorefrontView({
           <div
             className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
             style={{
-              background:
-                "linear-gradient(to top, rgba(10,8,6,0.72), rgba(10,8,6,0.28))",
+              background: "linear-gradient(to top, rgba(10,8,6,0.72), rgba(10,8,6,0.28))",
               color: "#fff",
             }}
           >
@@ -138,8 +137,8 @@ export function StorefrontView({
               {tagline}
             </h1>
             <p className="mt-4 max-w-md text-sm leading-relaxed opacity-70">
-              Every piece is cut, dyed and finished in the {name} atelier — made to
-              order, made to last, made to be remembered.
+              Every piece is cut, dyed and finished in the {name} atelier — made to order, made to
+              last, made to be remembered.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <button
@@ -168,10 +167,7 @@ export function StorefrontView({
       )}
 
       {o.showMarquee && (
-        <div
-          className="overflow-hidden py-2.5"
-          style={{ background: accent, color: accentFg }}
-        >
+        <div className="overflow-hidden py-2.5" style={{ background: accent, color: accentFg }}>
           <div className="marquee-track gap-10 text-xs font-bold uppercase tracking-[0.3em]">
             {[...textileWords, ...textileWords].map((w, i) => (
               <span key={i} className="flex items-center gap-10">
@@ -248,9 +244,11 @@ export function StorefrontView({
                 <Star key={i} className="h-4 w-4 fill-current" />
               ))}
             </div>
-            <p style={{ fontFamily: fontDisplay }} className="mt-4 text-xl font-medium leading-relaxed">
-              "The fitting was perfect and delivery took three days. I've ordered twice
-              more since."
+            <p
+              style={{ fontFamily: fontDisplay }}
+              className="mt-4 text-xl font-medium leading-relaxed"
+            >
+              "The fitting was perfect and delivery took three days. I've ordered twice more since."
             </p>
             <p className="mt-3 text-xs font-semibold uppercase tracking-widest opacity-60">
               — Ifeoma A., Abuja
@@ -268,7 +266,11 @@ export function StorefrontView({
             <input
               placeholder="you@email.com"
               className="flex-1 rounded-md border px-4 py-3 text-sm outline-none placeholder:opacity-60"
-              style={{ borderColor: "rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.12)", color: accentFg }}
+              style={{
+                borderColor: "rgba(255,255,255,0.4)",
+                background: "rgba(255,255,255,0.12)",
+                color: accentFg,
+              }}
             />
             <button
               className="rounded-md px-6 py-3 text-sm font-bold"

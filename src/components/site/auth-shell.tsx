@@ -37,15 +37,17 @@ export function AuthShell({ title, subtitle, children, footer }: AuthShellProps)
             Your atelier, online this afternoon.
           </p>
           <p className="mt-4 text-sm leading-relaxed text-ink-muted">
-            Join 12,400+ African designers selling on storefronts that look like
-            couture — because they are.
+            Join 12,400+ African designers selling on storefronts that look like couture — because
+            they are.
           </p>
           <p className="mt-8 text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted">
             "My first month online outsold my best market day."
           </p>
           <p className="mt-1 text-xs text-ink-muted">— Adeola Bankole, Ade Stitches · Lagos</p>
         </div>
-        <p className="relative text-xs text-ink-muted">© 2026 Sartorial · Lagos · Accra · Nairobi</p>
+        <p className="relative text-xs text-ink-muted">
+          © 2026 Sartorial · Lagos · Accra · Nairobi
+        </p>
       </aside>
 
       <main className="flex flex-col px-5 py-10 sm:px-10">

@@ -12,7 +12,11 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign in — Sartorial", name: "description", content: "Sign in to your Sartorial storefront dashboard." },
+      {
+        title: "Sign in — Sartorial",
+        name: "description",
+        content: "Sign in to your Sartorial storefront dashboard.",
+      },
       { property: "og:title", content: "Sign in — Sartorial" },
       { property: "og:description", content: "Sign in to your Sartorial storefront dashboard." },
       { property: "og:type", content: "website" },
@@ -56,7 +60,10 @@ function LoginPage() {
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <Label htmlFor="password">Password</Label>
-            <Link to="/forgot-password" className="text-xs font-medium text-primary hover:underline">
+            <Link
+              to="/forgot-password"
+              className="text-xs font-medium text-primary hover:underline"
+            >
               Forgot password?
             </Link>
           </div>

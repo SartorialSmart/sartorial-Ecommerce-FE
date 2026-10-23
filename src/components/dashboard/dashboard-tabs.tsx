@@ -210,7 +210,11 @@ export function PlanBillingTab() {
   return (
     <div className="space-y-6">
       <div className="grid gap-6 lg:grid-cols-3">
-        <Panel title="Current plan" note="Your storefront runs on this plan today." className="lg:col-span-2">
+        <Panel
+          title="Current plan"
+          note="Your storefront runs on this plan today."
+          className="lg:col-span-2"
+        >
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="font-display text-3xl font-bold">{plan.name}</p>
@@ -238,7 +242,9 @@ export function PlanBillingTab() {
                 onClick={() => setCycle(c)}
                 className={
                   "rounded-md px-4 py-1.5 text-sm font-semibold capitalize transition-colors " +
-                  (cycle === c ? "bg-ink text-ink-foreground" : "text-muted-foreground hover:text-foreground")
+                  (cycle === c
+                    ? "bg-ink text-ink-foreground"
+                    : "text-muted-foreground hover:text-foreground")
                 }
               >
                 {c === "annual" ? "Annual · save 20%" : "Monthly"}
@@ -278,11 +284,15 @@ export function PlanBillingTab() {
               <div key={p.id} className="bg-card p-6">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-bold">{p.name}</p>
-                  {isCurrent && <Badge className="bg-primary text-primary-foreground">Current</Badge>}
+                  {isCurrent && (
+                    <Badge className="bg-primary text-primary-foreground">Current</Badge>
+                  )}
                 </div>
                 <p className="mt-2 font-display text-3xl font-bold">
                   {pPrice === 0 ? "Free" : `$${pPrice}`}
-                  {pPrice > 0 && <span className="text-xs font-medium text-muted-foreground">/mo</span>}
+                  {pPrice > 0 && (
+                    <span className="text-xs font-medium text-muted-foreground">/mo</span>
+                  )}
                 </p>
                 <ul className="mt-4 space-y-2">
                   {p.features.map((f) => (
@@ -375,7 +385,11 @@ export function TeamTab() {
 
   return (
     <div className="grid gap-6 lg:grid-cols-3">
-      <Panel title="Your team" note="People with access to this store's dashboard." className="p-0 lg:col-span-2">
+      <Panel
+        title="Your team"
+        note="People with access to this store's dashboard."
+        className="p-0 lg:col-span-2"
+      >
         <Table>
           <TableHeader>
             <TableRow>

@@ -31,8 +31,8 @@ export function SiteFooter() {
           <div>
             <Logo />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-muted">
-              The commerce home for African fashion designers — storefronts, payments,
-              logistics and a marketplace that celebrates the craft.
+              The commerce home for African fashion designers — storefronts, payments, logistics and
+              a marketplace that celebrates the craft.
             </p>
             <div className="mt-5 flex gap-3">
               {[Instagram, Twitter, Youtube].map((Icon, i) => (
@@ -53,7 +53,10 @@ export function SiteFooter() {
               <ul className="mt-4 space-y-2.5 text-sm">
                 {col.links.map((l) => (
                   <li key={l.label}>
-                    <Link to={l.to} className="text-ink-foreground/80 transition-colors hover:text-primary">
+                    <Link
+                      to={l.to}
+                      className="text-ink-foreground/80 transition-colors hover:text-primary"
+                    >
                       {l.label}
                     </Link>
                   </li>
@@ -62,9 +65,7 @@ export function SiteFooter() {
             </div>
           ))}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-ink-muted">
-              Plans
-            </h3>
+            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-ink-muted">Plans</h3>
             <ul className="mt-4 space-y-2.5 text-sm text-ink-foreground/80">
               <li>Ankara — free forever</li>
               <li>Aso-Òkè — $29/mo</li>

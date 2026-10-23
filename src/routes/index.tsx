@@ -18,13 +18,7 @@ import {
 import { SiteNav } from "@/components/site/nav";
 import { SiteFooter } from "@/components/site/footer";
 import { Button } from "@/components/ui/button";
-import {
-  heroImage,
-  plans,
-  templates,
-  testimonials,
-  textileWords,
-} from "@/data/catalog";
+import { heroImage, plans, templates, testimonials, textileWords } from "@/data/catalog";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -117,9 +111,8 @@ function Hero() {
             <span className="text-primary"> your craft</span> deserves.
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-muted">
-            Sartorial gives designers a couture-grade online store, payments and
-            delivery that work across the continent, and a marketplace of customers
-            who came for the craft.
+            Sartorial gives designers a couture-grade online store, payments and delivery that work
+            across the continent, and a marketplace of customers who came for the craft.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Button asChild size="lg" className="h-12 px-7 text-base">
@@ -144,9 +137,7 @@ function Hero() {
             ].map(([value, label]) => (
               <div key={label}>
                 <dt className="font-display text-2xl font-bold sm:text-3xl">{value}</dt>
-                <dd className="mt-1 text-xs uppercase tracking-wider text-ink-muted">
-                  {label}
-                </dd>
+                <dd className="mt-1 text-xs uppercase tracking-wider text-ink-muted">{label}</dd>
               </div>
             ))}
           </dl>
@@ -208,9 +199,7 @@ function SectionHeading({
 }) {
   return (
     <div className="mx-auto max-w-2xl text-center">
-      <p className="text-xs font-bold uppercase tracking-[0.25em] text-primary">
-        {eyebrow}
-      </p>
+      <p className="text-xs font-bold uppercase tracking-[0.25em] text-primary">{eyebrow}</p>
       <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
         {title}
       </h2>
@@ -279,7 +268,8 @@ function DesignsShowcase() {
                 <h3 className="font-display text-xl font-bold">{t.name}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{t.tagline}</p>
                 <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                  Preview design <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  Preview design{" "}
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </span>
               </div>
             </Link>
@@ -368,11 +358,7 @@ function DesignerMock() {
             <div className="grid grid-cols-2 gap-2.5">
               {[0, 1].map((i) => (
                 <div key={i} className="overflow-hidden rounded-md border bg-card">
-                  <div
-                    className={
-                      i === 0 ? "h-20 bg-terracotta/30" : "h-20 bg-adire/25"
-                    }
-                  />
+                  <div className={i === 0 ? "h-20 bg-terracotta/30" : "h-20 bg-adire/25"} />
                   <div className="space-y-1.5 p-2">
                     <div className="h-2 w-3/4 rounded bg-muted" />
                     <div className="h-2 w-1/3 rounded bg-primary/40" />
@@ -395,15 +381,13 @@ function Plans() {
     <section id="plans" className="bg-ink py-20 text-ink-foreground lg:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-gold">
-            Plans
-          </p>
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-gold">Plans</p>
           <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
             Pricing that fits your label's measurements
           </h2>
           <p className="mt-4 text-base text-ink-muted">
-            Start free forever. Upgrade when the orders do — every plan includes
-            payments, logistics and the marketplace.
+            Start free forever. Upgrade when the orders do — every plan includes payments, logistics
+            and the marketplace.
           </p>
           <div className="mt-8 inline-flex rounded-lg border border-ink-line p-1">
             {(["monthly", "annual"] as const).map((b) => (
@@ -474,8 +458,8 @@ function Plans() {
           })}
         </div>
         <p className="mt-10 text-center text-xs text-ink-muted">
-          All plans: unlimited orders · secure checkout · seller protection · cancel
-          anytime. Marketplace fees apply only when we bring you the buyer.
+          All plans: unlimited orders · secure checkout · seller protection · cancel anytime.
+          Marketplace fees apply only when we bring you the buyer.
         </p>
       </div>
     </section>
@@ -485,16 +469,10 @@ function Plans() {
 function Testimonials() {
   return (
     <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
-      <SectionHeading
-        eyebrow="Designer voices"
-        title="Tailored feedback"
-      />
+      <SectionHeading eyebrow="Designer voices" title="Tailored feedback" />
       <div className="mt-14 grid gap-6 md:grid-cols-3">
         {testimonials.map((t) => (
-          <figure
-            key={t.name}
-            className="flex flex-col rounded-xl border bg-card p-7"
-          >
+          <figure key={t.name} className="flex flex-col rounded-xl border bg-card p-7">
             <span className="font-display text-4xl font-extrabold leading-none text-primary">
               "
             </span>
@@ -523,7 +501,11 @@ function FinalCta() {
         <p className="mt-4 text-base opacity-90">
           Free forever plan · Your store live in 2 minutes · No card needed.
         </p>
-        <Button asChild size="lg" className="mt-8 h-12 bg-ink px-8 text-base text-ink-foreground hover:bg-ink-deep">
+        <Button
+          asChild
+          size="lg"
+          className="mt-8 h-12 bg-ink px-8 text-base text-ink-foreground hover:bg-ink-deep"
+        >
           <Link to="/signup">
             Open your store <ArrowRight className="h-4 w-4" />
           </Link>

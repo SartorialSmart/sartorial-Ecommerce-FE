@@ -9,12 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { StorefrontView } from "@/components/storefront/storefront-view";
-import {
-  getTemplate,
-  templates,
-  type StoreTemplate,
-  type TemplateSlug,
-} from "@/data/catalog";
+import { getTemplate, templates, type StoreTemplate, type TemplateSlug } from "@/data/catalog";
 
 export const Route = createFileRoute("/designer")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -73,9 +68,7 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
 
 function DesignerPage() {
   const search = Route.useSearch();
-  const [slug, setSlug] = useState<TemplateSlug>(
-    getTemplate(search["template"])?.slug ?? "loom",
-  );
+  const [slug, setSlug] = useState<TemplateSlug>(getTemplate(search["template"])?.slug ?? "loom");
   const template = getTemplate(slug) as StoreTemplate;
   const [storeName, setStoreName] = useState("Ade Stitches");
   const [tagline, setTagline] = useState(template.tagline);
