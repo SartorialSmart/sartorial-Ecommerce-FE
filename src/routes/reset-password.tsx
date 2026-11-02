@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
@@ -7,6 +7,8 @@ import { AuthShell } from "@/components/site/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { confirmPasswordReset } from "@/lib/api/auth";
+import { ApiError } from "@/lib/api/client";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
@@ -25,12 +27,48 @@ export const Route = createFileRoute("/reset-password")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  validateSearch: (search: Record<string, unknown>) => ({
+    uid: typeof search["uid"] === "string" ? search["uid"] : "",
+    token: typeof search["token"] === "string" ? search["token"] : "",
+  }),
   component: ResetPasswordPage,
 });
 
 function ResetPasswordPage() {
   const navigate = useNavigate();
+  const { uid, token } = Route.useSearch();
   const [show, setShow] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!uid || !token) {
+      toast.error("This reset link is missing or invalid", {
+        description: "Request a new password reset email.",
+      });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await confirmPasswordReset({ uid, token, new_password: newPassword });
+      toast.success("Password updated", {
+        description: "Sign in with your new password to reach your dashboard.",
+      });
+      void navigate({ to: "/login" });
+    } catch (error) {
+      toast.error("Could not update your password", {
+        description: error instanceof ApiError ? error.message : "Please try again.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <AuthShell
@@ -45,16 +83,7 @@ function ResetPasswordPage() {
         </>
       }
     >
-      <form
-        className="space-y-5"
-        onSubmit={(e) => {
-          e.preventDefault();
-          toast.success("Password updated", {
-            description: "Sign in with your new password to reach your dashboard.",
-          });
-          void navigate({ to: "/login" });
-        }}
-      >
+      <form className="space-y-5" onSubmit={handleSubmit}>
         <div className="flex items-start gap-2.5 rounded-lg bg-secondary p-3 text-xs leading-relaxed text-muted-foreground">
           <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-leaf" />
           <p>
@@ -68,10 +97,13 @@ function ResetPasswordPage() {
             <Input
               id="new-password"
               type={show ? "text" : "password"}
+              autoComplete="new-password"
               required
               minLength={8}
               placeholder="At least 8 characters"
               className="pr-10"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
             />
             <button
               type="button"
@@ -88,13 +120,16 @@ function ResetPasswordPage() {
           <Input
             id="confirm-password"
             type={show ? "text" : "password"}
+            autoComplete="new-password"
             required
             minLength={8}
             placeholder="Type it once more"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </div>
-        <Button type="submit" className="w-full">
-          Save new password
+        <Button type="submit" className="w-full" disabled={submitting}>
+          {submitting ? "Saving…" : "Save new password"}
         </Button>
       </form>
     </AuthShell>

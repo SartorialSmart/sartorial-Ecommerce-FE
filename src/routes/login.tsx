@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ApiError } from "@/lib/api/client";
+import { useAuth } from "@/lib/auth/use-auth";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -28,7 +30,35 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const navigate = useNavigate();
+  const { login, status } = useAuth();
   const [show, setShow] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      void navigate({ to: "/dashboard" });
+    }
+  }, [status, navigate]);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubmitting(true);
+    try {
+      const user = await login(email, password);
+      toast.success(`Welcome back, ${user.full_name || user.email}`, {
+        description: "You're signed in to your Sartorial dashboard.",
+      });
+      void navigate({ to: "/dashboard" });
+    } catch (error) {
+      toast.error("Sign in failed", {
+        description: error instanceof ApiError ? error.message : "Please try again.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <AuthShell
@@ -43,19 +73,17 @@ function LoginPage() {
         </>
       }
     >
-      <form
-        className="space-y-5"
-        onSubmit={(e) => {
-          e.preventDefault();
-          toast.success("Welcome back, Adeola", {
-            description: "Signing you in to Ade Stitches — Lagos.",
-          });
-          void navigate({ to: "/dashboard" });
-        }}
-      >
+      <form className="space-y-5" onSubmit={handleSubmit}>
         <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" required defaultValue="ade@adestitches.com" />
+          <Input
+            id="email"
+            type="email"
+            autoComplete="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
@@ -71,9 +99,12 @@ function LoginPage() {
             <Input
               id="password"
               type={show ? "text" : "password"}
+              autoComplete="current-password"
               required
               placeholder="••••••••"
               className="pr-10"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <button
               type="button"
@@ -89,8 +120,14 @@ function LoginPage() {
           <Checkbox id="remember" defaultChecked />
           Keep me signed in for 30 days
         </label>
-        <Button type="submit" className="w-full">
-          Sign in <ArrowRight className="h-4 w-4" />
+        <Button type="submit" className="w-full" disabled={submitting}>
+          {submitting ? (
+            "Signing in…"
+          ) : (
+            <>
+              Sign in <ArrowRight className="h-4 w-4" />
+            </>
+          )}
         </Button>
         <div className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
           <span className="h-px flex-1 bg-border" />

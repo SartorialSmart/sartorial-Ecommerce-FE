@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   Area,
   AreaChart,
@@ -13,6 +13,7 @@ import {
   Bell,
   ChevronUp,
   Crown,
+  LogOut,
   Package,
   Plus,
   Search,
@@ -43,6 +44,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { lowStock, recentOrders, revenueSeries, salesChannels, type Order } from "@/data/catalog";
+import { useAuth } from "@/lib/auth/use-auth";
 import { formatCompactCurrency, formatCurrency } from "@/lib/currency";
 
 export const Route = createFileRoute("/dashboard")({
@@ -107,9 +109,38 @@ const stats = [
 ];
 
 function DashboardPage() {
+  const navigate = useNavigate();
+  const { user, status, logout } = useAuth();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const [tab, setTab] = useState("overview");
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      void navigate({ to: "/login" });
+    }
+  }, [status, navigate]);
+
+  if (status === "loading") {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">
+        Loading your dashboard…
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
+  const displayName = user.full_name.trim() || user.email;
+  const firstName = displayName.split(/\s+/)[0] ?? displayName;
+
+  const handleSignOut = async () => {
+    await logout();
+    toast.success("Signed out");
+    void navigate({ to: "/" });
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -136,8 +167,15 @@ function DashboardPage() {
               <Bell className="h-4.5 w-4.5" />
             </button>
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-              A
+              {displayName.charAt(0).toUpperCase()}
             </span>
+            <button
+              className="rounded-md p-2 hover:bg-ink-line"
+              aria-label="Sign out"
+              onClick={() => void handleSignOut()}
+            >
+              <LogOut className="h-4.5 w-4.5" />
+            </button>
           </div>
         </div>
       </header>
@@ -146,10 +184,10 @@ function DashboardPage() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="font-display text-3xl font-extrabold tracking-tight">
-              Good morning, Adeola
+              Good morning, {firstName}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Here's how Ade Stitches is threading along this month.
+              Here's how your store is threading along this month.
             </p>
           </div>
           <div className="flex gap-3">

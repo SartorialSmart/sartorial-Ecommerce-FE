@@ -1,3 +1,4 @@
+import { useEffect, useState, type FormEvent } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
@@ -6,6 +7,8 @@ import { AuthShell } from "@/components/site/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ApiError } from "@/lib/api/client";
+import { useAuth } from "@/lib/auth/use-auth";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({
@@ -29,6 +32,39 @@ export const Route = createFileRoute("/signup")({
 
 function SignupPage() {
   const navigate = useNavigate();
+  const { register, status } = useAuth();
+  const [name, setName] = useState("");
+  const [store, setStore] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      void navigate({ to: "/dashboard" });
+    }
+  }, [status, navigate]);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubmitting(true);
+    try {
+      const user = await register({ email, password, full_name: name.trim() });
+      if (typeof window !== "undefined" && store.trim()) {
+        window.sessionStorage.setItem("sartorial.pending_store_name", store.trim());
+      }
+      toast.success("Account created", {
+        description: `Welcome, ${user.full_name || user.email}. Let's set up your storefront.`,
+      });
+      void navigate({ to: "/setup" });
+    } catch (error) {
+      toast.error("Could not create your account", {
+        description: error instanceof ApiError ? error.message : "Please try again.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <AuthShell
@@ -43,38 +79,53 @@ function SignupPage() {
         </>
       }
     >
-      <form
-        className="space-y-5"
-        onSubmit={(e) => {
-          e.preventDefault();
-          toast.success("Account created", {
-            description: "Let's set up your storefront — three quick steps.",
-          });
-          void navigate({ to: "/setup" });
-        }}
-      >
+      <form className="space-y-5" onSubmit={handleSubmit}>
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="name">Your name</Label>
-            <Input id="name" required placeholder="Adeola Bankole" />
+            <Input
+              id="name"
+              required
+              autoComplete="name"
+              placeholder="Adeola Bankole"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="store">Store name</Label>
-            <Input id="store" required placeholder="Ade Stitches" />
+            <Input
+              id="store"
+              required
+              placeholder="Ade Stitches"
+              value={store}
+              onChange={(e) => setStore(e.target.value)}
+            />
           </div>
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" required placeholder="ade@adestitches.com" />
+          <Input
+            id="email"
+            type="email"
+            autoComplete="email"
+            required
+            placeholder="ade@adestitches.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="password">Password</Label>
           <Input
             id="password"
             type="password"
+            autoComplete="new-password"
             required
             minLength={8}
             placeholder="At least 8 characters"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <p className="text-xs text-muted-foreground">
             Use 8+ characters with a mix of letters, numbers and symbols.
@@ -85,8 +136,14 @@ function SignupPage() {
           <span className="font-semibold text-foreground">Sartorial seller terms</span> and our
           privacy policy. We never sell your customer data.
         </p>
-        <Button type="submit" className="w-full">
-          Create my store <ArrowRight className="h-4 w-4" />
+        <Button type="submit" className="w-full" disabled={submitting}>
+          {submitting ? (
+            "Creating your store…"
+          ) : (
+            <>
+              Create my store <ArrowRight className="h-4 w-4" />
+            </>
+          )}
         </Button>
         <div className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
           <span className="h-px flex-1 bg-border" />

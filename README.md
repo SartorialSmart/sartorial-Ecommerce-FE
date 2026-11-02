@@ -21,7 +21,8 @@ npm install
 npm run dev
 ```
 
-The development server runs at http://localhost:8080.
+The development server runs at http://localhost:3000. Copy `.env.example` to `.env.local`
+and point `VITE_API_BASE_URL` at the Django API (default `http://localhost:8000/api/v1`).
 
 ## Scripts
 

@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/auth/use-auth";
 
 const links = [
   { to: "/templates", label: "Storefront designs" },
@@ -13,7 +14,15 @@ const links = [
 
 export function SiteNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
   const [open, setOpen] = useState(false);
+
+  const handleSignOut = async () => {
+    await logout();
+    setOpen(false);
+    void navigate({ to: "/" });
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-ink-line bg-ink/95 text-ink-foreground backdrop-blur">
@@ -35,15 +44,27 @@ export function SiteNav() {
           ))}
         </nav>
         <div className="hidden items-center gap-4 md:flex">
-          <Link
-            to="/login"
-            className="text-sm font-medium text-ink-foreground/75 transition-colors hover:text-ink-foreground"
-          >
-            Sign in
-          </Link>
-          <Button asChild>
-            <Link to="/signup">Open your store</Link>
-          </Button>
+          {isAuthenticated ? (
+            <button
+              type="button"
+              onClick={() => void handleSignOut()}
+              className="text-sm font-medium text-ink-foreground/75 transition-colors hover:text-ink-foreground"
+            >
+              Sign out
+            </button>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="text-sm font-medium text-ink-foreground/75 transition-colors hover:text-ink-foreground"
+              >
+                Sign in
+              </Link>
+              <Button asChild>
+                <Link to="/signup">Open your store</Link>
+              </Button>
+            </>
+          )}
         </div>
         <button
           className="rounded-md p-2 hover:bg-ink-line md:hidden"
@@ -70,16 +91,28 @@ export function SiteNav() {
                 {l.label}
               </Link>
             ))}
-            <Link
-              to="/login"
-              onClick={() => setOpen(false)}
-              className="text-sm font-medium text-ink-foreground/75"
-            >
-              Sign in
-            </Link>
-            <Button asChild onClick={() => setOpen(false)}>
-              <Link to="/signup">Open your store</Link>
-            </Button>
+            {isAuthenticated ? (
+              <button
+                type="button"
+                onClick={() => void handleSignOut()}
+                className="text-left text-sm font-medium text-ink-foreground/75"
+              >
+                Sign out
+              </button>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  onClick={() => setOpen(false)}
+                  className="text-sm font-medium text-ink-foreground/75"
+                >
+                  Sign in
+                </Link>
+                <Button asChild onClick={() => setOpen(false)}>
+                  <Link to="/signup">Open your store</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}

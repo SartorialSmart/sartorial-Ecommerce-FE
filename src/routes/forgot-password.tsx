@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, MailCheck } from "lucide-react";
 import { toast } from "sonner";
@@ -7,6 +7,8 @@ import { AuthShell } from "@/components/site/auth-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { requestPasswordReset } from "@/lib/api/auth";
+import { ApiError } from "@/lib/api/client";
 
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
@@ -29,8 +31,25 @@ export const Route = createFileRoute("/forgot-password")({
 });
 
 function ForgotPasswordPage() {
-  const [email, setEmail] = useState("ade@adestitches.com");
+  const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubmitting(true);
+    try {
+      await requestPasswordReset(email);
+      toast.success("Reset link sent", { description: `Open the link we sent to ${email}.` });
+      setSent(true);
+    } catch (error) {
+      toast.error("Could not send the reset link", {
+        description: error instanceof ApiError ? error.message : "Please try again.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <AuthShell
@@ -63,14 +82,7 @@ function ForgotPasswordPage() {
           </Button>
         </div>
       ) : (
-        <form
-          className="space-y-5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            toast.success("Reset link sent", { description: `Open the link we sent to ${email}.` });
-            setSent(true);
-          }}
-        >
+        <form className="space-y-5" onSubmit={handleSubmit}>
           <div className="space-y-1.5">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -81,8 +93,14 @@ function ForgotPasswordPage() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <Button type="submit" className="w-full">
-            Send reset link <ArrowRight className="h-4 w-4" />
+          <Button type="submit" className="w-full" disabled={submitting}>
+            {submitting ? (
+              "Sending…"
+            ) : (
+              <>
+                Send reset link <ArrowRight className="h-4 w-4" />
+              </>
+            )}
           </Button>
           <p className="text-center text-xs text-muted-foreground">
             Tip: the link opens a page where you set the new password — nothing is changed until you

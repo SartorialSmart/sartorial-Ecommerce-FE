@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Check, Rocket } from "lucide-react";
 import { toast } from "sonner";
@@ -90,6 +90,19 @@ function SetupPage() {
 
   const [domain, setDomain] = useState("ade-stitches");
   const [planId, setPlanId] = useState("asooke");
+
+  useEffect(() => {
+    const pending = window.sessionStorage.getItem("sartorial.pending_store_name");
+    if (pending) {
+      setStoreName(pending);
+      setDomain(
+        pending
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, ""),
+      );
+    }
+  }, []);
 
   const template = templates.find((t) => t.slug === slug) ?? templates[0]!;
   const accent = accents[accentIdx]!;

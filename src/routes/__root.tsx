@@ -11,6 +11,8 @@ import {
 import { type ReactNode } from "react";
 import { Toaster } from "sonner";
 
+import { AuthProvider } from "@/lib/auth/auth-provider";
+
 import appCss from "../styles.css?url";
 
 const FONTS_URL =
@@ -125,9 +127,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
-      <Toaster position="top-center" richColors />
+      <AuthProvider>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+        <Toaster position="top-center" richColors />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
