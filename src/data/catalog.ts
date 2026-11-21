@@ -213,7 +213,7 @@ export interface Plan {
   highlight?: boolean;
 }
 
-export const plans: Plan[] = [
+const DEFAULT_PLANS: Plan[] = [
   {
     id: "ankara",
     name: "Ankara",
@@ -266,6 +266,30 @@ export const plans: Plan[] = [
     ],
   },
 ];
+
+let plansStore: Plan[] = [...DEFAULT_PLANS];
+let plansLoaded = false;
+
+export function getPlans(): Plan[] {
+  return plansStore;
+}
+
+export async function loadPlans(tenantSlug: string | null = null): Promise<Plan[]> {
+  if (plansLoaded) return plansStore;
+  try {
+    const { listPricingTiers, pricingTierToPlan } = await import("@/lib/api/pricing");
+    const tiers = await listPricingTiers(tenantSlug);
+    if (tiers.length > 0) {
+      plansStore = tiers.map(pricingTierToPlan);
+    }
+  } catch {
+    // Keep hardcoded default plans if backend is unreachable.
+  }
+  plansLoaded = true;
+  return plansStore;
+}
+
+export const plans: Plan[] = [...DEFAULT_PLANS];
 
 export interface Order {
   id: string;

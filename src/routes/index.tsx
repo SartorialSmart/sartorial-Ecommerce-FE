@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -18,7 +18,8 @@ import {
 import { SiteNav } from "@/components/site/nav";
 import { SiteFooter } from "@/components/site/footer";
 import { Button } from "@/components/ui/button";
-import { heroImage, plans, templates, testimonials, textileWords } from "@/data/catalog";
+import { heroImage, templates, testimonials, textileWords } from "@/data/catalog";
+import { getPlans, loadPlans, type Plan } from "@/data/catalog";
 import { formatCurrency } from "@/lib/currency";
 
 export const Route = createFileRoute("/")({
@@ -377,6 +378,11 @@ function DesignerMock() {
 
 function Plans() {
   const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
+  const [plansState, setPlansState] = useState<Plan[]>([]);
+
+  useEffect(() => {
+    loadPlans().then(setPlansState);
+  }, []);
 
   return (
     <section id="plans" className="bg-ink py-20 text-ink-foreground lg:py-28">
@@ -408,7 +414,7 @@ function Plans() {
           </div>
         </div>
         <div className="mt-14 grid items-stretch gap-6 lg:grid-cols-3">
-          {plans.map((p) => {
+          {plansState.map((p) => {
             const price = billing === "annual" ? p.annual : p.monthly;
             return (
               <div

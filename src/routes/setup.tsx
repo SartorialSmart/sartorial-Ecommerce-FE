@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { plans, templates, type TemplateSlug } from "@/data/catalog";
+import { getPlans, loadPlans, templates, type Plan, type TemplateSlug } from "@/data/catalog";
 import { currencies, DEFAULT_CURRENCY, formatCurrency, type CurrencyCode } from "@/lib/currency";
 
 export const Route = createFileRoute("/setup")({
@@ -90,6 +90,7 @@ function SetupPage() {
 
   const [domain, setDomain] = useState("ade-stitches");
   const [planId, setPlanId] = useState("asooke");
+  const [plansState, setPlansState] = useState<Plan[]>([]);
 
   useEffect(() => {
     const pending = window.sessionStorage.getItem("sartorial.pending_store_name");
@@ -102,6 +103,7 @@ function SetupPage() {
           .replace(/^-|-$/g, ""),
       );
     }
+    loadPlans().then(setPlansState);
   }, []);
 
   const template = templates.find((t) => t.slug === slug) ?? templates[0]!;
@@ -109,7 +111,7 @@ function SetupPage() {
   const font = fonts[fontIdx]!;
 
   const launch = () => {
-    const plan = plans.find((p) => p.id === planId) ?? plans[0]!;
+    const plan = plansState.find((p) => p.id === planId) ?? plansState[0]!;
     toast.success(`${storeName} is live!`, {
       description: `Launched on the ${template.name} design with the ${plan.name} plan.`,
     });
@@ -384,7 +386,7 @@ function SetupPage() {
                 <div>
                   <Label>Choose a plan</Label>
                   <div className="mt-3 grid gap-3 sm:grid-cols-3">
-                    {plans.map((p) => (
+                    {plansState.map((p) => (
                       <button
                         key={p.id}
                         type="button"

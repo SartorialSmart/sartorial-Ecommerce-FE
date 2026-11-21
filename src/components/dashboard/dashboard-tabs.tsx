@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CreditCard, Globe, Landmark, ShieldCheck, Smartphone, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
@@ -22,7 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { plans } from "@/data/catalog";
+import { getPlans, loadPlans, type Plan } from "@/data/catalog";
 import { currencies, DEFAULT_CURRENCY, formatCurrency } from "@/lib/currency";
 
 function Panel({
@@ -206,7 +206,13 @@ const invoices = [
 export function PlanBillingTab() {
   const [cycle, setCycle] = useState<"monthly" | "annual">("monthly");
   const [current, setCurrent] = useState("asooke");
-  const plan = plans.find((p) => p.id === current) ?? plans[0]!;
+  const [plansState, setPlansState] = useState<Plan[]>([]);
+
+  useEffect(() => {
+    loadPlans().then(setPlansState);
+  }, []);
+
+  const plan = plansState.find((p) => p.id === current) ?? plansState[0]!;
   const price = cycle === "monthly" ? plan.monthly : plan.annual;
 
   return (
@@ -279,7 +285,7 @@ export function PlanBillingTab() {
         className="p-0"
       >
         <div className="grid gap-px bg-border sm:grid-cols-3">
-          {plans.map((p) => {
+          {plansState.map((p) => {
             const pPrice = cycle === "monthly" ? p.monthly : p.annual;
             const isCurrent = p.id === current;
             return (

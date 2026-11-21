@@ -73,3 +73,30 @@ export interface CreatedProduct {
   title: string;
   slug: string;
 }
+
+export interface PricingTier {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  monthly_price: number;
+  annual_price: number;
+  platform_fee_percent: string;
+  features: string[];
+  cta: string;
+  tagline: string;
+  is_featured: boolean;
+  sort_order: number;
+  is_active: boolean;
+}
+
+export interface Plan {
+  id: string;
+  name: string;
+  tagline: string;
+  monthly: number;
+  annual: number;
+  features: string[];
+  cta: string;
+  highlight?: boolean;
+}
