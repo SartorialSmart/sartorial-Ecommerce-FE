@@ -58,6 +58,9 @@ export interface RequestOptions {
   headers?: Record<string, string>;
   signal?: AbortSignal;
   retryOnUnauthorized?: boolean;
+  // Defaults to the build-time VITE_TENANT_SLUG. Pass a slug to override it, or
+  // null to send no X-Tenant-Slug header at all (e.g. store-agnostic reads).
+  tenantSlug?: string | null;
 }
 
 async function parseResponse(response: Response): Promise<unknown> {
@@ -149,6 +152,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     headers = {},
     signal,
     retryOnUnauthorized = true,
+    tenantSlug,
   } = options;
 
   const url = `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
@@ -160,8 +164,9 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
   if (body !== undefined) {
     requestHeaders["content-type"] = "application/json";
   }
-  if (TENANT_SLUG) {
-    requestHeaders["x-tenant-slug"] = TENANT_SLUG;
+  const slug = tenantSlug === undefined ? TENANT_SLUG : tenantSlug;
+  if (slug) {
+    requestHeaders["x-tenant-slug"] = slug;
   }
   const accessToken = getAccessToken();
   if (auth && accessToken) {

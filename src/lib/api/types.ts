@@ -42,3 +42,34 @@ export interface PasswordResetConfirmPayload {
   token: string;
   new_password: string;
 }
+
+export interface TenantStore {
+  id: string;
+  name: string;
+  slug: string;
+  type: "erp_subscriber" | "independent";
+  status: string;
+  logo_url: string | null;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+export interface CreateSimpleProductInput {
+  title: string;
+  description?: string;
+  categoryId?: number | null;
+  newCategory?: string;
+  sku: string;
+  price: string;
+  stock: number;
+}
+
+export interface CreatedProduct {
+  id: string;
+  title: string;
+  slug: string;
+}

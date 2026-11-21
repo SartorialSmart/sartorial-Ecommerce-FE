@@ -24,6 +24,7 @@ import {
 import { toast } from "sonner";
 
 import { Logo } from "@/components/brand/logo";
+import { AddProductDialog } from "@/components/dashboard/add-product-dialog";
 import { PlanBillingTab, StoreSettingsTab, TeamTab } from "@/components/dashboard/dashboard-tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -114,6 +115,7 @@ function DashboardPage() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const [tab, setTab] = useState("overview");
+  const [addProductOpen, setAddProductOpen] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -196,13 +198,7 @@ function DashboardPage() {
                 View storefront
               </Link>
             </Button>
-            <Button
-              onClick={() =>
-                toast.success("Product draft created", {
-                  description: "Continue in Products → Drafts.",
-                })
-              }
-            >
+            <Button onClick={() => setAddProductOpen(true)}>
               <Plus className="h-4 w-4" /> Add product
             </Button>
           </div>
@@ -408,7 +404,11 @@ function DashboardPage() {
                 <div className="rounded-xl border bg-card p-6">
                   <h2 className="font-display text-lg font-bold">Quick actions</h2>
                   <div className="mt-4 grid grid-cols-2 gap-3">
-                    <Button variant="secondary" className="h-auto flex-col gap-1 py-3 text-xs">
+                    <Button
+                      variant="secondary"
+                      className="h-auto flex-col gap-1 py-3 text-xs"
+                      onClick={() => setAddProductOpen(true)}
+                    >
                       <Plus className="h-4 w-4" /> Add product
                     </Button>
                     <Button
@@ -457,6 +457,7 @@ function DashboardPage() {
           Sartorial shop owner dashboard · Sample data for the demo storefront
         </p>
       </main>
+      <AddProductDialog open={addProductOpen} onOpenChange={setAddProductOpen} />
     </div>
   );
 }
