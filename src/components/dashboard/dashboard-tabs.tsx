@@ -74,17 +74,17 @@ export function StoreSettingsTab() {
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="profile-store">Store name</Label>
-            <Input id="profile-store" defaultValue="Ade Stitches" />
+            <Input id="profile-store" placeholder="Your store name" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="profile-tagline">Hero tagline</Label>
-            <Input id="profile-tagline" defaultValue="Handwoven heritage, gallery-lit." />
+            <Input id="profile-tagline" placeholder="Short tagline for your storefront" />
           </div>
           <div className="space-y-1.5">
             <Label>City &amp; country</Label>
-            <Select defaultValue="Lagos, Nigeria">
+            <Select>
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue placeholder="Select location" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Lagos, Nigeria">Lagos, Nigeria</SelectItem>
@@ -126,18 +126,18 @@ export function StoreSettingsTab() {
           <div className="flex items-center justify-between rounded-lg border bg-secondary/50 px-4 py-3">
             <div className="flex items-center gap-2.5 text-sm">
               <Globe className="h-4 w-4 text-muted-foreground" />
-              ade-stitches.sartorial.store
+              your-store.sartorial.store
             </div>
             <Badge variant="secondary">Primary</Badge>
           </div>
           <div className="mt-4 flex gap-2">
-            <Input placeholder="adestitches.com" aria-label="Custom domain" />
+            <Input placeholder="yourdomain.com" aria-label="Custom domain" />
             <Button
               variant="outline"
               className="shrink-0"
               onClick={() =>
                 toast.success("Domain queued for connection", {
-                  description: "We'll verify DNS for ade-stitches.com within the hour.",
+                  description: "We'll verify DNS once you submit your domain.",
                 })
               }
             >
@@ -167,7 +167,7 @@ export function StoreSettingsTab() {
             ))}
           </div>
           <p className="mt-4 text-xs text-muted-foreground">
-            Payouts settle to your GTBank account every Friday.
+            Payouts settle to your configured bank account.
           </p>
         </Panel>
 
@@ -366,30 +366,6 @@ export function PlanBillingTab() {
 
 /* ============================== Team ============================== */
 
-const team = [
-  {
-    name: "Adeola Bankole",
-    email: "ade@adestitches.com",
-    role: "Owner",
-    active: "Online now",
-    tint: "bg-primary text-primary-foreground",
-  },
-  {
-    name: "Kora Mensah",
-    email: "kora@adestitches.com",
-    role: "Manager",
-    active: "2 hours ago",
-    tint: "bg-adire text-white",
-  },
-  {
-    name: "Ifeoma Adeyemi",
-    email: "ifeoma@adestitches.com",
-    role: "Fulfilment",
-    active: "Yesterday",
-    tint: "bg-leaf text-white",
-  },
-];
-
 export function TeamTab() {
   const [inviteEmail, setInviteEmail] = useState("");
 
@@ -410,52 +386,11 @@ export function TeamTab() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {team.map((m) => (
-              <TableRow key={m.email}>
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={
-                        "flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold " +
-                        m.tint
-                      }
-                    >
-                      {m.name.charAt(0)}
-                    </span>
-                    <span className="text-sm font-semibold">{m.name}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="hidden text-sm text-muted-foreground sm:table-cell">
-                  {m.email}
-                </TableCell>
-                <TableCell>
-                  {m.role === "Owner" ? (
-                    <Badge variant="secondary">Owner</Badge>
-                  ) : (
-                    <Select
-                      defaultValue={m.role}
-                      onValueChange={(r) =>
-                        toast.success(`${m.name} is now a ${r.toLowerCase()}`, {
-                          description: "Permissions update the next time they sign in.",
-                        })
-                      }
-                    >
-                      <SelectTrigger className="h-8 w-36 text-sm">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Manager">Manager</SelectItem>
-                        <SelectItem value="Fulfilment">Fulfilment</SelectItem>
-                        <SelectItem value="Viewer">Viewer</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
-                </TableCell>
-                <TableCell className="hidden text-right text-sm text-muted-foreground sm:table-cell">
-                  {m.active}
-                </TableCell>
-              </TableRow>
-            ))}
+            <TableRow>
+              <TableCell colSpan={4} className="py-10 text-center text-sm text-muted-foreground">
+                No team members yet. Invite teammates to collaborate on this store.
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </Panel>
@@ -468,7 +403,7 @@ export function TeamTab() {
               <Input
                 id="invite-email"
                 type="email"
-                placeholder="tailor@adestitches.com"
+                placeholder="teammate@example.com"
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
               />

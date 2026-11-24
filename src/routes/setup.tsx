@@ -78,8 +78,8 @@ function SetupPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
 
-  const [storeName, setStoreName] = useState("Ade Stitches");
-  const [tagline, setTagline] = useState("Handwoven heritage, gallery-lit.");
+  const [storeName, setStoreName] = useState("");
+  const [tagline, setTagline] = useState("");
   const [city, setCity] = useState(cities[0]!);
   const [currency, setCurrency] = useState<CurrencyCode>(DEFAULT_CURRENCY);
   const [category, setCategory] = useState("Womenswear");
@@ -88,7 +88,7 @@ function SetupPage() {
   const [accentIdx, setAccentIdx] = useState(0);
   const [fontIdx, setFontIdx] = useState(0);
 
-  const [domain, setDomain] = useState("ade-stitches");
+  const [domain, setDomain] = useState("");
   const [planId, setPlanId] = useState("asooke");
   const [plansState, setPlansState] = useState<Plan[]>([]);
 
@@ -380,7 +380,7 @@ function SetupPage() {
                     />
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Custom domains (like ade-stitches.com) connect in Dashboard → Store settings.
+                    Custom domains (like yourdomain.com) connect in Dashboard → Store settings.
                   </p>
                 </div>
                 <div>

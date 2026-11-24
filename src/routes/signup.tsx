@@ -87,7 +87,7 @@ function SignupPage() {
               id="name"
               required
               autoComplete="name"
-              placeholder="Adeola Bankole"
+              placeholder="Your full name"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -97,7 +97,7 @@ function SignupPage() {
             <Input
               id="store"
               required
-              placeholder="Ade Stitches"
+              placeholder="Your store name"
               value={store}
               onChange={(e) => setStore(e.target.value)}
             />

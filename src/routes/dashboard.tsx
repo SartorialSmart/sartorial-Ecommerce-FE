@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   Area,
@@ -9,18 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import {
-  Bell,
-  ChevronUp,
-  Crown,
-  LogOut,
-  Package,
-  Plus,
-  Search,
-  TrendingDown,
-  TrendingUp,
-  Users,
-} from "lucide-react";
+import { Bell, ChevronUp, Crown, LogOut, Package, Plus, Search, Users } from "lucide-react";
 import { toast } from "sonner";
 
 import { Logo } from "@/components/brand/logo";
@@ -44,7 +33,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { lowStock, recentOrders, revenueSeries, salesChannels, type Order } from "@/data/catalog";
+import { getAnalyticsSummary, type AnalyticsSummary } from "@/lib/api/analytics";
+import { listMyStores } from "@/lib/api/catalog";
+import { listAdminOrders, type AdminOrder } from "@/lib/api/orders";
+import type { TenantStore } from "@/lib/api/types";
 import { useAuth } from "@/lib/auth/use-auth";
 import { formatCompactCurrency, formatCurrency } from "@/lib/currency";
 
@@ -69,45 +61,15 @@ export const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
 });
 
-const statusStyles: Record<Order["status"], string> = {
-  Fulfilled: "bg-leaf/15 text-leaf",
-  "In production": "bg-accent text-accent-foreground",
-  Shipped: "bg-adire/15 text-adire",
-  "Awaiting payment": "bg-destructive/10 text-destructive",
+const statusStyles: Record<string, string> = {
+  fulfilled: "bg-leaf/15 text-leaf",
+  processing: "bg-accent text-accent-foreground",
+  shipped: "bg-adire/15 text-adire",
+  pending: "bg-destructive/10 text-destructive",
+  cancelled: "bg-muted text-muted-foreground",
 };
 
 const channelBars = ["bg-chart-1", "bg-chart-2", "bg-chart-3", "bg-chart-4"];
-
-const stats = [
-  {
-    label: "Revenue · this month",
-    value: formatCompactCurrency(64812835),
-    delta: "+18.2%",
-    up: true,
-    note: "vs last month",
-  },
-  {
-    label: "Orders",
-    value: "1,284",
-    delta: "+8.4%",
-    up: true,
-    note: "vs last month",
-  },
-  {
-    label: "Avg. order value",
-    value: formatCompactCurrency(49673),
-    delta: "−2.1%",
-    up: false,
-    note: "vs last month",
-  },
-  {
-    label: "Store visitors",
-    value: "24,102",
-    delta: "+22.6%",
-    up: true,
-    note: "vs last month",
-  },
-];
 
 function DashboardPage() {
   const navigate = useNavigate();
@@ -116,12 +78,90 @@ function DashboardPage() {
   useEffect(() => setMounted(true), []);
   const [tab, setTab] = useState("overview");
   const [addProductOpen, setAddProductOpen] = useState(false);
+  const [stores, setStores] = useState<TenantStore[]>([]);
+  const [storeSlug, setStoreSlug] = useState<string | null>(null);
+  const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [dataLoading, setDataLoading] = useState(false);
+  const [dataError, setDataError] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
       void navigate({ to: "/login" });
     }
   }, [status, navigate]);
+
+  useEffect(() => {
+    if (status !== "authenticated") return;
+    let cancelled = false;
+    setDataLoading(true);
+    listMyStores()
+      .then((myStores) => {
+        if (cancelled) return;
+        setStores(myStores);
+        setStoreSlug((current) => current ?? myStores[0]?.slug ?? null);
+      })
+      .catch((e) => {
+        if (!cancelled) setDataError(e instanceof Error ? e.message : "Failed to load stores.");
+      })
+      .finally(() => {
+        if (!cancelled) setDataLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [status]);
+
+  useEffect(() => {
+    if (status !== "authenticated") return;
+    let cancelled = false;
+    setDataLoading(true);
+    setDataError(null);
+    Promise.all([getAnalyticsSummary(storeSlug), listAdminOrders(storeSlug, { limit: 6 })])
+      .then(([summary, recent]) => {
+        if (cancelled) return;
+        setAnalytics(summary);
+        setOrders(recent);
+      })
+      .catch((e) => {
+        if (!cancelled)
+          setDataError(e instanceof Error ? e.message : "Failed to load dashboard data.");
+      })
+      .finally(() => {
+        if (!cancelled) setDataLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [status, storeSlug]);
+
+  const stats = useMemo(() => {
+    const k = analytics?.kpis;
+    const revenue = k ? Number(k.revenue) : null;
+    const avg = k ? Number(k.avg_order_value) : null;
+    return [
+      {
+        label: "Revenue",
+        value: revenue !== null ? formatCompactCurrency(revenue) : "—",
+        note: k ? `${k.paid_orders} paid orders` : "No data yet",
+      },
+      {
+        label: "Orders",
+        value: k ? String(k.orders) : "—",
+        note: k ? `${k.paid_orders} paid` : "No data yet",
+      },
+      {
+        label: "Avg. order value",
+        value: avg !== null ? formatCompactCurrency(avg) : "—",
+        note: k ? `${k.customers} customers` : "No data yet",
+      },
+      {
+        label: "Products",
+        value: k ? String(k.products) : "—",
+        note: k ? `${k.low_stock} low stock` : "No data yet",
+      },
+    ];
+  }, [analytics]);
 
   if (status === "loading") {
     return (
@@ -131,9 +171,7 @@ function DashboardPage() {
     );
   }
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   const displayName = user.full_name.trim() || user.email;
   const firstName = displayName.split(/\s+/)[0] ?? displayName;
@@ -144,25 +182,41 @@ function DashboardPage() {
     void navigate({ to: "/" });
   };
 
+  const revenueSeries = (analytics?.revenue_by_day ?? []).map((d) => ({
+    week: d.date.slice(5),
+    revenue: Number(d.revenue),
+  }));
+  const fulfillment = analytics?.fulfillment_split ?? [];
+  const fulfillmentTotal = fulfillment.reduce((s, f) => s + f.quantity, 0) || 1;
+  const lowStockItems = analytics?.top_products?.filter((p) => p.quantity <= 5) ?? [];
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-50 border-b bg-ink text-ink-foreground">
         <div className="flex h-14 items-center justify-between gap-4 px-4 sm:px-6">
           <div className="flex items-center gap-4">
             <Logo compact />
-            <Select defaultValue="ade-stitches">
+            <Select value={storeSlug ?? ""} onValueChange={(v) => setStoreSlug(v || null)}>
               <SelectTrigger className="w-44 border-ink-line bg-transparent text-ink-foreground sm:w-56">
-                <SelectValue />
+                <SelectValue placeholder={stores.length ? "Select store" : "No stores yet"} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ade-stitches">Ade Stitches — Lagos</SelectItem>
-                <SelectItem value="maison-kora">Maison Kora — Accra</SelectItem>
+                {stores.length === 0 ? (
+                  <SelectItem value="__none__" disabled>
+                    No stores linked
+                  </SelectItem>
+                ) : (
+                  stores.map((s) => (
+                    <SelectItem key={s.slug} value={s.slug}>
+                      {s.name}
+                    </SelectItem>
+                  ))
+                )}
               </SelectContent>
             </Select>
           </div>
           <div className="hidden items-center gap-2 rounded-md border border-ink-line px-3 py-2 text-xs text-ink-muted md:flex md:w-64">
-            <Search className="h-3.5 w-3.5" />
-            Search orders, products…
+            <Search className="h-3.5 w-3.5" /> Search orders, products…
           </div>
           <div className="flex items-center gap-3">
             <button className="rounded-md p-2 hover:bg-ink-line" aria-label="Notifications">
@@ -189,7 +243,7 @@ function DashboardPage() {
               Good morning, {firstName}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Here's how your store is threading along this month.
+              Here’s what’s happening in your store.
             </p>
           </div>
           <div className="flex gap-3">
@@ -204,15 +258,11 @@ function DashboardPage() {
           </div>
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/30 bg-accent/40 px-5 py-4">
-          <p className="text-sm">
-            <span className="font-semibold">Almost there.</span> Finish store setup — claim your
-            address and pick a plan.
-          </p>
-          <Button asChild size="sm" variant="outline">
-            <Link to="/setup">Finish setup</Link>
-          </Button>
-        </div>
+        {dataError && (
+          <div className="mt-6 rounded-xl border border-destructive/30 bg-destructive/10 px-5 py-4 text-sm text-destructive">
+            {dataError}
+          </div>
+        )}
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {stats.map((s) => (
@@ -220,20 +270,10 @@ function DashboardPage() {
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 {s.label}
               </p>
-              <p className="mt-2 font-display text-3xl font-bold">{s.value}</p>
-              <p className="mt-2 flex items-center gap-1.5 text-xs">
-                {s.up ? (
-                  <TrendingUp className="h-3.5 w-3.5 text-leaf" />
-                ) : (
-                  <TrendingDown className="h-3.5 w-3.5 text-destructive" />
-                )}
-                <span
-                  className={s.up ? "font-semibold text-leaf" : "font-semibold text-destructive"}
-                >
-                  {s.delta}
-                </span>
-                <span className="text-muted-foreground">{s.note}</span>
+              <p className="mt-2 font-display text-3xl font-bold">
+                {dataLoading && !analytics ? "…" : s.value}
               </p>
+              <p className="mt-2 text-xs text-muted-foreground">{s.note}</p>
             </div>
           ))}
         </div>
@@ -310,22 +350,29 @@ function DashboardPage() {
               </div>
 
               <div className="rounded-xl border bg-card p-6">
-                <h2 className="font-display text-lg font-bold">Sales channels</h2>
+                <h2 className="font-display text-lg font-bold">Fulfillment split</h2>
                 <div className="mt-5 space-y-4">
-                  {salesChannels.map((c, i) => (
-                    <div key={c.name}>
-                      <div className="flex items-center justify-between text-sm">
-                        <span>{c.name}</span>
-                        <span className="font-semibold">{c.share}%</span>
-                      </div>
-                      <div className="mt-1.5 h-2 rounded-full bg-muted">
-                        <div
-                          className={`h-2 rounded-full ${channelBars[i]}`}
-                          style={{ width: `${c.share}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
+                  {fulfillment.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No fulfillment data yet.</p>
+                  ) : (
+                    fulfillment.map((c, i) => {
+                      const share = Math.round((c.quantity / fulfillmentTotal) * 100);
+                      return (
+                        <div key={c.type}>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="capitalize">{c.type.replace(/_/g, " ")}</span>
+                            <span className="font-semibold">{share}%</span>
+                          </div>
+                          <div className="mt-1.5 h-2 rounded-full bg-muted">
+                            <div
+                              className={`h-2 rounded-full ${channelBars[i % channelBars.length]}`}
+                              style={{ width: `${share}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               </div>
             </div>
@@ -344,61 +391,64 @@ function DashboardPage() {
                       <TableHead>Order</TableHead>
                       <TableHead>Customer</TableHead>
                       <TableHead className="hidden sm:table-cell">Item</TableHead>
-                      <TableHead className="hidden md:table-cell">Channel</TableHead>
                       <TableHead className="text-right">Total</TableHead>
                       <TableHead className="text-right">Status</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {recentOrders.map((o) => (
-                      <TableRow key={o.id}>
-                        <TableCell className="font-mono text-xs">{o.id}</TableCell>
-                        <TableCell className="text-sm">{o.customer}</TableCell>
-                        <TableCell className="hidden text-sm sm:table-cell">{o.item}</TableCell>
-                        <TableCell className="hidden text-sm text-muted-foreground md:table-cell">
-                          {o.channel}
-                        </TableCell>
-                        <TableCell className="text-right text-sm font-semibold">
-                          {formatCurrency(o.total)}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <span
-                            className={`inline-block rounded-md px-2 py-1 text-[11px] font-semibold ${statusStyles[o.status]}`}
-                          >
-                            {o.status}
-                          </span>
+                    {orders.length === 0 ? (
+                      <TableRow>
+                        <TableCell
+                          colSpan={5}
+                          className="py-8 text-center text-sm text-muted-foreground"
+                        >
+                          No orders yet.
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ) : (
+                      orders.map((o) => (
+                        <TableRow key={o.id}>
+                          <TableCell className="font-mono text-xs">{o.number}</TableCell>
+                          <TableCell className="text-sm">
+                            {o.contact_name || o.contact_email || "—"}
+                          </TableCell>
+                          <TableCell className="hidden text-sm sm:table-cell">
+                            {o.lines[0]?.title ?? "—"}
+                          </TableCell>
+                          <TableCell className="text-right text-sm font-semibold">
+                            {formatCurrency(Number(o.total_charged || o.total_base || 0))}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <span
+                              className={`inline-block rounded-md px-2 py-1 text-[11px] font-semibold ${statusStyles[o.status] ?? "bg-muted text-muted-foreground"}`}
+                            >
+                              {o.status}
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </div>
 
               <div className="space-y-6">
                 <div className="rounded-xl border bg-card p-6">
-                  <h2 className="font-display text-lg font-bold">Running low</h2>
+                  <h2 className="font-display text-lg font-bold">Top products</h2>
                   <div className="mt-4 space-y-3">
-                    {lowStock.map((p) => (
-                      <div key={p.name} className="flex items-center justify-between text-sm">
-                        <div className="flex items-center gap-2.5">
-                          <Package className="h-4 w-4 text-muted-foreground" />
-                          <span>{p.name}</span>
+                    {(analytics?.top_products ?? []).length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No product data yet.</p>
+                    ) : (
+                      (analytics?.top_products ?? []).slice(0, 5).map((p) => (
+                        <div key={p.title} className="flex items-center justify-between text-sm">
+                          <div className="flex items-center gap-2.5">
+                            <Package className="h-4 w-4 text-muted-foreground" />
+                            <span className="line-clamp-1">{p.title}</span>
+                          </div>
+                          <span className="text-xs text-muted-foreground">{p.quantity} sold</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-semibold text-destructive">
-                            {p.left} left
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-7 px-2 text-[11px]"
-                            onClick={() => toast.success(`Restock started for ${p.name}`)}
-                          >
-                            Restock
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </div>
                 </div>
                 <div className="rounded-xl border bg-card p-6">
@@ -454,7 +504,7 @@ function DashboardPage() {
         </Tabs>
 
         <p className="mt-8 text-center text-xs text-muted-foreground">
-          Sartorial shop owner dashboard · Sample data for the demo storefront
+          Sartorial shop owner dashboard
         </p>
       </main>
       <AddProductDialog open={addProductOpen} onOpenChange={setAddProductOpen} />
