@@ -99,6 +99,11 @@ function DashboardPage() {
       .then((myStores) => {
         if (cancelled) return;
         setStores(myStores);
+        if (myStores.length === 0) {
+          // No store yet — send the account through onboarding to claim one.
+          void navigate({ to: "/setup" });
+          return;
+        }
         setStoreSlug((current) => current ?? myStores[0]?.slug ?? null);
       })
       .catch((e) => {
@@ -110,10 +115,10 @@ function DashboardPage() {
     return () => {
       cancelled = true;
     };
-  }, [status]);
+  }, [status, navigate]);
 
   useEffect(() => {
-    if (status !== "authenticated") return;
+    if (status !== "authenticated" || !storeSlug) return;
     let cancelled = false;
     setDataLoading(true);
     setDataError(null);
@@ -175,6 +180,8 @@ function DashboardPage() {
 
   const displayName = user.full_name.trim() || user.email;
   const firstName = displayName.split(/\s+/)[0] ?? displayName;
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   const handleSignOut = async () => {
     await logout();
@@ -186,9 +193,19 @@ function DashboardPage() {
     week: d.date.slice(5),
     revenue: Number(d.revenue),
   }));
+  // Real trend: last half of the 14-day window vs the first half.
+  const trendBadge = (() => {
+    const series = analytics?.revenue_by_day ?? [];
+    if (series.length < 14) return null;
+    const half = Math.floor(series.length / 2);
+    const previous = series.slice(0, half).reduce((sum, d) => sum + Number(d.revenue), 0);
+    const latest = series.slice(half).reduce((sum, d) => sum + Number(d.revenue), 0);
+    if (previous <= 0) return null;
+    const pct = Math.round(((latest - previous) / previous) * 100);
+    return `${pct >= 0 ? "+" : ""}${pct}% vs prior 7 days`;
+  })();
   const fulfillment = analytics?.fulfillment_split ?? [];
   const fulfillmentTotal = fulfillment.reduce((s, f) => s + f.quantity, 0) || 1;
-  const lowStockItems = analytics?.top_products?.filter((p) => p.quantity <= 5) ?? [];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -240,7 +257,7 @@ function DashboardPage() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="font-display text-3xl font-extrabold tracking-tight">
-              Good morning, {firstName}
+              {greeting}, {firstName}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
               Here’s what’s happening in your store.
@@ -290,8 +307,8 @@ function DashboardPage() {
             <div className="grid gap-6 lg:grid-cols-3">
               <div className="rounded-xl border bg-card p-6 lg:col-span-2">
                 <div className="flex items-center justify-between">
-                  <h2 className="font-display text-lg font-bold">Revenue — last 12 weeks</h2>
-                  <Badge variant="secondary">+164% quarter</Badge>
+                  <h2 className="font-display text-lg font-bold">Revenue — last 14 days</h2>
+                  {trendBadge && <Badge variant="secondary">{trendBadge}</Badge>}
                 </div>
                 <div className="mt-4 h-72">
                   {mounted ? (
@@ -491,20 +508,20 @@ function DashboardPage() {
           </TabsContent>
 
           <TabsContent value="settings" className="mt-6">
-            <StoreSettingsTab />
+            <StoreSettingsTab tenantSlug={storeSlug} />
           </TabsContent>
 
           <TabsContent value="plan" className="mt-6">
-            <PlanBillingTab />
+            <PlanBillingTab tenantSlug={storeSlug} />
           </TabsContent>
 
           <TabsContent value="team" className="mt-6">
-            <TeamTab />
+            <TeamTab tenantSlug={storeSlug} />
           </TabsContent>
         </Tabs>
 
         <p className="mt-8 text-center text-xs text-muted-foreground">
-          Sartorial shop owner dashboard
+          Copyright - {new Date().getFullYear()} Sartorial Ecommerce
         </p>
       </main>
       <AddProductDialog open={addProductOpen} onOpenChange={setAddProductOpen} />

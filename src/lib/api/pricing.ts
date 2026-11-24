@@ -7,16 +7,17 @@ function unwrapResults<T>(data: T[] | { results?: T[] } | null): T[] {
 }
 
 export async function listPricingTiers(tenantSlug: string | null = null): Promise<PricingTier[]> {
-  const data = await apiRequest<PricingTier[] | { results?: PricingTier[] } | null>(
-    "/pricing/",
-    { tenantSlug },
-  );
+  const data = await apiRequest<PricingTier[] | { results?: PricingTier[] } | null>("/pricing/", {
+    tenantSlug,
+  });
   return unwrapResults(data);
 }
 
 export function pricingTierToPlan(tier: PricingTier): Plan {
   return {
-    id: tier.id,
+    // Use the tier slug as the plan id: it matches the `store.plan` setting
+    // ("ankara", "asooke", …) written by store setup and plan changes.
+    id: tier.slug,
     name: tier.name,
     tagline: tier.tagline,
     monthly: tier.monthly_price,

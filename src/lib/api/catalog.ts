@@ -1,10 +1,5 @@
 import { apiRequest } from "./client";
-import type {
-  Category,
-  CreateSimpleProductInput,
-  CreatedProduct,
-  TenantStore,
-} from "./types";
+import type { Category, CreateSimpleProductInput, CreatedProduct, TenantStore } from "./types";
 
 function unwrapResults<T>(data: T[] | { results?: T[] } | null): T[] {
   if (Array.isArray(data)) return data;
@@ -12,16 +7,13 @@ function unwrapResults<T>(data: T[] | { results?: T[] } | null): T[] {
 }
 
 export async function listMyStores(): Promise<TenantStore[]> {
-  const data = await apiRequest<TenantStore[] | { results?: TenantStore[] }>(
-    "/admin/my-stores/",
-    { tenantSlug: null },
-  );
+  const data = await apiRequest<TenantStore[] | { results?: TenantStore[] }>("/admin/my-stores/", {
+    tenantSlug: null,
+  });
   return unwrapResults(data);
 }
 
-export async function listCategories(
-  tenantSlug: string | null,
-): Promise<Category[]> {
+export async function listCategories(tenantSlug: string | null): Promise<Category[]> {
   const data = await apiRequest<Category[] | { results?: Category[] } | null>(
     "/catalog/categories/",
     { tenantSlug },

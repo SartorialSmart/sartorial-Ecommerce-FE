@@ -12,9 +12,7 @@ export function Logo({ compact = false }: { compact?: boolean }) {
         decoding="async"
       />
       {!compact && (
-        <span className="font-display text-xl font-extrabold tracking-tight">
-          Ecommerce
-        </span>
+        <span className="font-display text-xl font-extrabold tracking-tight">Ecommerce</span>
       )}
     </Link>
   );

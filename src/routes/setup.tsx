@@ -16,6 +16,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getPlans, loadPlans, templates, type Plan, type TemplateSlug } from "@/data/catalog";
+import { setupStore } from "@/lib/api/tenants";
+import { useAuth } from "@/lib/auth/use-auth";
 import { currencies, DEFAULT_CURRENCY, formatCurrency, type CurrencyCode } from "@/lib/currency";
 
 export const Route = createFileRoute("/setup")({
@@ -76,7 +78,9 @@ function PanelTitle({ title, note }: { title: string; note: string }) {
 
 function SetupPage() {
   const navigate = useNavigate();
+  const { refreshUser } = useAuth();
   const [step, setStep] = useState(0);
+  const [launching, setLaunching] = useState(false);
 
   const [storeName, setStoreName] = useState("");
   const [tagline, setTagline] = useState("");
@@ -110,12 +114,47 @@ function SetupPage() {
   const accent = accents[accentIdx]!;
   const font = fonts[fontIdx]!;
 
-  const launch = () => {
-    const plan = plansState.find((p) => p.id === planId) ?? plansState[0]!;
-    toast.success(`${storeName} is live!`, {
-      description: `Launched on the ${template.name} design with the ${plan.name} plan.`,
-    });
-    void navigate({ to: "/dashboard" });
+  const launch = async () => {
+    if (launching) return;
+    if (!storeName.trim()) {
+      toast.error("Add a store name to launch.", {
+        description: "You can always rename it later from your dashboard.",
+      });
+      setStep(0);
+      return;
+    }
+    setLaunching(true);
+    try {
+      await setupStore({
+        name: storeName.trim(),
+        slug: domain.trim() || undefined,
+        tagline: tagline.trim() || undefined,
+        city,
+        currency,
+        category,
+        plan: planId,
+        template: slug,
+        accent: accent.value,
+        accent_fg: accent.fg,
+        font_display: font.value,
+      });
+      // The account becomes a seller with its own store — refresh so the
+      // dashboard's seller endpoints and role checks see the new role.
+      await refreshUser();
+      const plan = plansState.find((p) => p.id === planId) ?? plansState[0];
+      toast.success(`${storeName} is live!`, {
+        description: plan
+          ? `Launched on the ${template.name} design with the ${plan.name} plan.`
+          : `Launched on the ${template.name} design.`,
+      });
+      void navigate({ to: "/dashboard" });
+    } catch (e) {
+      toast.error("Couldn't launch your store", {
+        description: e instanceof Error ? e.message : "Please try again.",
+      });
+    } finally {
+      setLaunching(false);
+    }
   };
 
   return (
@@ -434,8 +473,8 @@ function SetupPage() {
                 Continue <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button type="button" onClick={launch}>
-                <Rocket className="h-4 w-4" /> Launch my store
+              <Button type="button" disabled={launching} onClick={() => void launch()}>
+                <Rocket className="h-4 w-4" /> {launching ? "Launching…" : "Launch my store"}
               </Button>
             )}
           </div>

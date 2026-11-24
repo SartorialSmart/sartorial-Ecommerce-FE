@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Monitor, Rocket, Smartphone, Undo2 } from "lucide-react";
 import { toast } from "sonner";
@@ -10,6 +10,13 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { StorefrontView } from "@/components/storefront/storefront-view";
 import { getTemplate, templates, type StoreTemplate, type TemplateSlug } from "@/data/catalog";
+import { listMyStores } from "@/lib/api/catalog";
+import {
+  getAdminSettings,
+  patchAdminSettings,
+  settingsToMap,
+  stringSetting,
+} from "@/lib/api/settings";
 
 export const Route = createFileRoute("/designer")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -70,7 +77,7 @@ function DesignerPage() {
   const search = Route.useSearch();
   const [slug, setSlug] = useState<TemplateSlug>(getTemplate(search["template"])?.slug ?? "loom");
   const template = getTemplate(slug) as StoreTemplate;
-  const [storeName, setStoreName] = useState("Ade Stitches");
+  const [storeName, setStoreName] = useState("");
   const [tagline, setTagline] = useState(template.tagline);
   const [accent, setAccent] = useState(swatches[0]!);
   const [font, setFont] = useState(fonts[0]!);
@@ -80,6 +87,51 @@ function DesignerPage() {
   const [showTestimonial, setShowTestimonial] = useState(true);
   const [showCta, setShowCta] = useState(true);
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
+  const [tenantSlug, setTenantSlug] = useState<string | null>(null);
+  const [domain, setDomain] = useState("");
+  const [publishing, setPublishing] = useState(false);
+
+  // Load the live store identity + design from the settings API.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const stores = await listMyStores();
+        const storeSlug = stores[0]?.slug ?? null;
+        if (cancelled) return;
+        setTenantSlug(storeSlug);
+        const resp = await getAdminSettings(storeSlug);
+        if (cancelled) return;
+        const map = settingsToMap(resp);
+        const name = stringSetting(map, "store.name");
+        if (name) setStoreName(name);
+        const savedTagline = stringSetting(map, "store.tagline");
+        if (savedTagline) setTagline(savedTagline);
+        const savedTemplate = stringSetting(map, "storefront.template");
+        const savedTemplateObj = getTemplate(savedTemplate);
+        if (savedTemplateObj) setSlug(savedTemplateObj.slug);
+        const savedAccent = swatches.find((s) => s.value === map["storefront.accent"]);
+        if (savedAccent) setAccent(savedAccent);
+        const savedFont = fonts.find((f) => f.value === map["storefront.font_display"]);
+        if (savedFont) setFont(savedFont);
+        const savedHero = stringSetting(map, "storefront.hero_layout");
+        if (savedHero === "split" || savedHero === "overlay") setHeroLayout(savedHero);
+        if (typeof map["storefront.show_announcement"] === "boolean")
+          setShowAnnouncement(map["storefront.show_announcement"]);
+        if (typeof map["storefront.show_marquee"] === "boolean")
+          setShowMarquee(map["storefront.show_marquee"]);
+        if (typeof map["storefront.show_testimonial"] === "boolean")
+          setShowTestimonial(map["storefront.show_testimonial"]);
+        if (typeof map["storefront.show_cta"] === "boolean") setShowCta(map["storefront.show_cta"]);
+        setDomain(stringSetting(map, "store.domain"));
+      } catch {
+        // Not signed in or no store yet — the designer keeps its local draft.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const pickTemplate = (t: StoreTemplate) => {
     setSlug(t.slug);
@@ -89,10 +141,37 @@ function DesignerPage() {
     setHeroLayout(t.slug === "lagos" ? "overlay" : "split");
   };
 
-  const publish = () => {
-    toast.success(`${storeName} is live`, {
-      description: `Published to sartorial.store/ade-stitches on the ${template.name} design.`,
-    });
+  const storefrontHost = `${domain || tenantSlug || "your-store"}.sartorialecommerce.com`;
+
+  const publish = async () => {
+    if (publishing) return;
+    setPublishing(true);
+    try {
+      const values: Record<string, unknown> = {
+        "store.tagline": tagline,
+        "storefront.template": slug,
+        "storefront.accent": accent.value,
+        "storefront.accent_fg": accent.fg,
+        "storefront.font_display": font.value,
+        "storefront.hero_layout": heroLayout,
+        "storefront.show_announcement": showAnnouncement,
+        "storefront.show_marquee": showMarquee,
+        "storefront.show_testimonial": showTestimonial,
+        "storefront.show_cta": showCta,
+      };
+      const name = storeName.trim();
+      if (name) values["store.name"] = name;
+      await patchAdminSettings(values, tenantSlug);
+      toast.success(`${name || "Your store"} is live`, {
+        description: `Published to ${storefrontHost} on the ${template.name} design.`,
+      });
+    } catch (e) {
+      toast.error("Couldn't publish your design", {
+        description: e instanceof Error ? e.message : "Please try again.",
+      });
+    } finally {
+      setPublishing(false);
+    }
   };
 
   return (
@@ -114,8 +193,8 @@ function DesignerPage() {
             >
               <Undo2 className="h-4 w-4" /> Reset
             </Button>
-            <Button size="sm" onClick={publish}>
-              <Rocket className="h-4 w-4" /> Publish
+            <Button size="sm" disabled={publishing} onClick={() => void publish()}>
+              <Rocket className="h-4 w-4" /> {publishing ? "Publishing…" : "Publish"}
             </Button>
           </div>
         </div>
@@ -156,6 +235,7 @@ function DesignerPage() {
               <Label htmlFor="store-name">Store name</Label>
               <Input
                 id="store-name"
+                placeholder="Your store name"
                 value={storeName}
                 onChange={(e) => setStoreName(e.target.value)}
                 maxLength={24}
@@ -248,7 +328,7 @@ function DesignerPage() {
         <main className="bg-secondary/50 p-4 lg:p-8">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <span className="rounded-md border bg-card px-3 py-1.5 text-xs text-muted-foreground">
-              sartorial.store/ade-stitches
+              {storefrontHost}
             </span>
             <div className="flex items-center gap-3">
               <div className="inline-flex rounded-lg border bg-card p-1">
@@ -277,7 +357,7 @@ function DesignerPage() {
                   <Smartphone className="h-4 w-4" />
                 </button>
               </div>
-              <Button onClick={publish} className="lg:hidden">
+              <Button onClick={() => void publish()} className="lg:hidden" disabled={publishing}>
                 <Rocket className="h-4 w-4" /> Publish
               </Button>
             </div>

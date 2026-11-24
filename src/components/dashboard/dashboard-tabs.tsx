@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CreditCard, Globe, Landmark, ShieldCheck, Smartphone, Wallet } from "lucide-react";
+import { CreditCard, Globe, Landmark, ShieldCheck, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +22,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getPlans, loadPlans, type Plan } from "@/data/catalog";
+import { loadPlans, type Plan } from "@/data/catalog";
+import { ApiError } from "@/lib/api/client";
+import {
+  getAdminSettings,
+  patchAdminSettings,
+  settingsToMap,
+  stringSetting,
+} from "@/lib/api/settings";
+import {
+  inviteTenantMember,
+  listTenantMemberships,
+  type MembershipRole,
+  type TenantMembership,
+} from "@/lib/api/tenants";
 import { currencies, DEFAULT_CURRENCY, formatCurrency } from "@/lib/currency";
 
 function Panel({
@@ -45,24 +58,111 @@ function Panel({
   );
 }
 
+function errorMessage(e: unknown): string {
+  return e instanceof Error ? e.message : "The request failed.";
+}
+
+const CITIES = [
+  "Lagos, Nigeria",
+  "Accra, Ghana",
+  "Nairobi, Kenya",
+  "Kigali, Rwanda",
+  "Dakar, Senegal",
+  "Johannesburg, South Africa",
+];
+
+const PAYMENT_PROVIDERS = [
+  { key: "mock", name: "Mock gateway (test mode)", icon: Wallet },
+  { key: "paystack", name: "Paystack — cards & bank transfer", icon: CreditCard },
+  { key: "flutterwave", name: "Flutterwave", icon: Landmark },
+];
+
 /* ============================== Store settings ============================== */
 
-const paymentMethods = [
-  { name: "Paystack — cards & bank transfer", icon: CreditCard, on: true },
-  { name: "M-Pesa — mobile money", icon: Smartphone, on: true },
-  { name: "Flutterwave", icon: Wallet, on: false },
-  { name: "Pay on delivery (Lagos & Accra)", icon: Landmark, on: true },
-];
+export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) {
+  const [loaded, setLoaded] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [name, setName] = useState("");
+  const [tagline, setTagline] = useState("");
+  const [city, setCity] = useState(CITIES[0]!);
+  const [currency, setCurrency] = useState<string>(DEFAULT_CURRENCY);
+  const [domain, setDomain] = useState("");
+  const [providers, setProviders] = useState<string[]>(["mock"]);
+  const [flatRate, setFlatRate] = useState("0");
+  const [freeThreshold, setFreeThreshold] = useState("0");
 
-const deliveryZones = [
-  { zone: "Lagos — next-day courier", price: `${formatCurrency(3500)} flat`, on: true },
-  { zone: "Pan-African — 3 to 5 days", price: `from ${formatCurrency(15895)}`, on: true },
-  { zone: "Worldwide — 5 to 9 days", price: `from ${formatCurrency(37089)}`, on: false },
-];
+  useEffect(() => {
+    let cancelled = false;
+    setLoaded(false);
+    getAdminSettings(tenantSlug)
+      .then((resp) => {
+        if (cancelled) return;
+        const map = settingsToMap(resp);
+        setName(stringSetting(map, "store.name"));
+        setTagline(stringSetting(map, "store.tagline"));
+        setCity(stringSetting(map, "store.city") || CITIES[0]!);
+        setCurrency(stringSetting(map, "store.currency") || DEFAULT_CURRENCY);
+        setDomain(stringSetting(map, "store.domain"));
+        const enabled = map["payments.providers"];
+        setProviders(Array.isArray(enabled) ? enabled.map(String) : ["mock"]);
+        setFlatRate(stringSetting(map, "shipping.flat_rate", "0") || "0");
+        setFreeThreshold(stringSetting(map, "shipping.free_threshold", "0") || "0");
+        setLoaded(true);
+      })
+      .catch((e) => {
+        if (!cancelled)
+          toast.error("Couldn't load store settings", { description: errorMessage(e) });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [tenantSlug]);
 
-export function StoreSettingsTab() {
-  const [payments, setPayments] = useState(paymentMethods);
-  const [zones, setZones] = useState(deliveryZones);
+  const saveProfile = async () => {
+    if (!loaded || saving) return;
+    setSaving(true);
+    try {
+      await patchAdminSettings(
+        {
+          "store.name": name.trim(),
+          "store.tagline": tagline.trim(),
+          "store.city": city,
+          "store.currency": currency,
+          "store.domain": domain.trim(),
+          "shipping.flat_rate": flatRate || "0",
+          "shipping.free_threshold": freeThreshold || "0",
+        },
+        tenantSlug,
+      );
+      toast.success("Store profile saved", {
+        description: "Changes are live on your storefront immediately.",
+      });
+    } catch (e) {
+      toast.error("Couldn't save changes", { description: errorMessage(e) });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const toggleProvider = async (key: string, on: boolean) => {
+    const previous = providers;
+    const next = on ? [...previous, key] : previous.filter((k) => k !== key);
+    setProviders(next);
+    try {
+      await patchAdminSettings({ "payments.providers": next }, tenantSlug);
+      toast.success("Payment methods updated");
+    } catch (e) {
+      setProviders(previous);
+      toast.error("Couldn't update payment methods", { description: errorMessage(e) });
+    }
+  };
+
+  const cityOptions = city && !CITIES.includes(city) ? [city, ...CITIES] : CITIES;
+  const currencyOptions =
+    currency && !currencies.some((c) => c.value === currency)
+      ? [{ value: currency, label: currency }, ...currencies]
+      : currencies;
+  const storefrontHost = `${domain || tenantSlug || "your-store"}.sartorialecommerce.com`;
 
   return (
     <div className="grid gap-6 lg:grid-cols-5">
@@ -74,33 +174,45 @@ export function StoreSettingsTab() {
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="profile-store">Store name</Label>
-            <Input id="profile-store" placeholder="Your store name" />
+            <Input
+              id="profile-store"
+              placeholder="Your store name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="profile-tagline">Hero tagline</Label>
-            <Input id="profile-tagline" placeholder="Short tagline for your storefront" />
+            <Input
+              id="profile-tagline"
+              placeholder="Short tagline for your storefront"
+              value={tagline}
+              onChange={(e) => setTagline(e.target.value)}
+            />
           </div>
           <div className="space-y-1.5">
             <Label>City &amp; country</Label>
-            <Select>
+            <Select value={city} onValueChange={setCity}>
               <SelectTrigger>
                 <SelectValue placeholder="Select location" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Lagos, Nigeria">Lagos, Nigeria</SelectItem>
-                <SelectItem value="Accra, Ghana">Accra, Ghana</SelectItem>
-                <SelectItem value="Nairobi, Kenya">Nairobi, Kenya</SelectItem>
+                {cityOptions.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
             <Label>Currency</Label>
-            <Select defaultValue={DEFAULT_CURRENCY}>
+            <Select value={currency} onValueChange={setCurrency}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {currencies.map((c) => (
+                {currencyOptions.map((c) => (
                   <SelectItem key={c.value} value={c.value}>
                     {c.label}
                   </SelectItem>
@@ -108,16 +220,19 @@ export function StoreSettingsTab() {
               </SelectContent>
             </Select>
           </div>
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label htmlFor="profile-domain">Storefront address</Label>
+            <Input
+              id="profile-domain"
+              value={domain}
+              placeholder={tenantSlug || "your-store"}
+              onChange={(e) => setDomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"))}
+            />
+            <p className="text-xs text-muted-foreground">Live at {storefrontHost}</p>
+          </div>
         </div>
-        <Button
-          className="mt-6"
-          onClick={() =>
-            toast.success("Store profile saved", {
-              description: "Changes are live on your storefront immediately.",
-            })
-          }
-        >
-          Save changes
+        <Button className="mt-6" disabled={!loaded || saving} onClick={() => void saveProfile()}>
+          {saving ? "Saving…" : "Save changes"}
         </Button>
       </Panel>
 
@@ -126,67 +241,62 @@ export function StoreSettingsTab() {
           <div className="flex items-center justify-between rounded-lg border bg-secondary/50 px-4 py-3">
             <div className="flex items-center gap-2.5 text-sm">
               <Globe className="h-4 w-4 text-muted-foreground" />
-              your-store.sartorial.store
+              {storefrontHost}
             </div>
             <Badge variant="secondary">Primary</Badge>
           </div>
-          <div className="mt-4 flex gap-2">
-            <Input placeholder="yourdomain.com" aria-label="Custom domain" />
-            <Button
-              variant="outline"
-              className="shrink-0"
-              onClick={() =>
-                toast.success("Domain queued for connection", {
-                  description: "We'll verify DNS once you submit your domain.",
-                })
-              }
-            >
-              Connect
-            </Button>
-          </div>
           <p className="mt-3 text-xs text-muted-foreground">
-            Custom domains are included on the Aso-Òkè plan and above.
+            Your free Sartorial address. Custom domains connect in a later release.
           </p>
         </Panel>
 
         <Panel title="Payment methods" note="How customers pay you at checkout.">
           <div className="space-y-4">
-            {payments.map((p, i) => (
-              <div key={p.name} className="flex items-center justify-between">
+            {PAYMENT_PROVIDERS.map((p) => (
+              <div key={p.key} className="flex items-center justify-between">
                 <span className="flex items-center gap-2.5 text-sm">
                   <p.icon className="h-4 w-4 text-muted-foreground" />
                   {p.name}
                 </span>
                 <Switch
-                  checked={p.on}
-                  onCheckedChange={(v) =>
-                    setPayments((list) => list.map((x, j) => (j === i ? { ...x, on: v } : x)))
-                  }
+                  checked={providers.includes(p.key)}
+                  onCheckedChange={(v) => void toggleProvider(p.key, v)}
                 />
               </div>
             ))}
           </div>
           <p className="mt-4 text-xs text-muted-foreground">
-            Payouts settle to your configured bank account.
+            Enabled at checkout as soon as your provider keys are configured.
           </p>
         </Panel>
 
-        <Panel title="Delivery zones" note="Flat-rate zones shown at checkout.">
+        <Panel title="Shipping" note="Flat-rate shipping shown at checkout.">
           <div className="space-y-4">
-            {zones.map((z, i) => (
-              <div key={z.zone} className="flex items-center justify-between gap-3">
-                <div className="text-sm">
-                  <p>{z.zone}</p>
-                  <p className="text-xs text-muted-foreground">{z.price}</p>
-                </div>
-                <Switch
-                  checked={z.on}
-                  onCheckedChange={(v) =>
-                    setZones((list) => list.map((x, j) => (j === i ? { ...x, on: v } : x)))
-                  }
-                />
-              </div>
-            ))}
+            <div className="space-y-1.5">
+              <Label htmlFor="shipping-flat">Flat rate ({currency})</Label>
+              <Input
+                id="shipping-flat"
+                type="number"
+                min="0"
+                step="any"
+                value={flatRate}
+                onChange={(e) => setFlatRate(e.target.value)}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="shipping-free">Free shipping over ({currency})</Label>
+              <Input
+                id="shipping-free"
+                type="number"
+                min="0"
+                step="any"
+                value={freeThreshold}
+                onChange={(e) => setFreeThreshold(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">
+                0 disables the free-shipping threshold.
+              </p>
+            </div>
           </div>
         </Panel>
       </div>
@@ -196,24 +306,51 @@ export function StoreSettingsTab() {
 
 /* ============================== Plan & billing ============================== */
 
-const invoices = [
-  { date: "Jan 22, 2026", plan: "Aso-Òkè — monthly", amount: 38413, status: "Paid" },
-  { date: "Dec 22, 2025", plan: "Aso-Òkè — monthly", amount: 38413, status: "Paid" },
-  { date: "Nov 22, 2025", plan: "Ankara — free", amount: 0, status: "Paid" },
-  { date: "Oct 22, 2025", plan: "Ankara — free", amount: 0, status: "Paid" },
-];
-
-export function PlanBillingTab() {
+export function PlanBillingTab({ tenantSlug }: { tenantSlug: string | null }) {
   const [cycle, setCycle] = useState<"monthly" | "annual">("monthly");
-  const [current, setCurrent] = useState("asooke");
+  const [current, setCurrent] = useState<string | null>(null);
   const [plansState, setPlansState] = useState<Plan[]>([]);
+  const [switching, setSwitching] = useState(false);
 
   useEffect(() => {
-    loadPlans().then(setPlansState);
-  }, []);
+    let cancelled = false;
+    loadPlans(tenantSlug).then((plans) => {
+      if (!cancelled) setPlansState(plans);
+    });
+    getAdminSettings(tenantSlug)
+      .then((resp) => {
+        if (!cancelled) setCurrent(stringSetting(settingsToMap(resp), "store.plan", "ankara"));
+      })
+      .catch(() => {
+        if (!cancelled) setCurrent("ankara");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [tenantSlug]);
 
-  const plan = plansState.find((p) => p.id === current) ?? plansState[0]!;
-  const price = cycle === "monthly" ? plan.monthly : plan.annual;
+  const plan = plansState.find((p) => p.id === current) ?? plansState[0];
+  const planReady = current !== null && plan !== undefined;
+  const price = plan ? (cycle === "monthly" ? plan.monthly : plan.annual) : 0;
+
+  const switchPlan = async (p: Plan) => {
+    if (p.id === current || switching) return;
+    setSwitching(true);
+    try {
+      await patchAdminSettings({ "store.plan": p.id }, tenantSlug);
+      setCurrent(p.id);
+      toast.success(`Plan switched to ${p.name}`, {
+        description:
+          cycle === "annual"
+            ? "Billed annually — you saved 20%."
+            : "Billed monthly. Cancel any time.",
+      });
+    } catch (e) {
+      toast.error("Couldn't switch plan", { description: errorMessage(e) });
+    } finally {
+      setSwitching(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -225,8 +362,12 @@ export function PlanBillingTab() {
         >
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="font-display text-3xl font-bold">{plan.name}</p>
-              <p className="mt-1 text-sm text-muted-foreground">{plan.tagline}</p>
+              <p className="font-display text-3xl font-bold">
+                {planReady && plan ? plan.name : "…"}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {planReady && plan ? plan.tagline : "Loading your plan…"}
+              </p>
             </div>
             <div className="text-right">
               <p className="font-display text-3xl font-bold">
@@ -236,9 +377,6 @@ export function PlanBillingTab() {
                     /{cycle === "monthly" ? "mo" : "mo, billed yearly"}
                   </span>
                 )}
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Next invoice {cycle === "monthly" ? "Feb 22, 2026" : "Nov 22, 2026"}
               </p>
             </div>
           </div>
@@ -262,20 +400,9 @@ export function PlanBillingTab() {
         </Panel>
 
         <Panel title="Payment method">
-          <div className="flex items-center gap-3 rounded-lg border bg-secondary/50 px-4 py-3">
-            <CreditCard className="h-5 w-5 text-muted-foreground" />
-            <div className="text-sm">
-              <p className="font-semibold">Visa ending 4084</p>
-              <p className="text-xs text-muted-foreground">Expires 09 / 2028</p>
-            </div>
+          <div className="rounded-lg border bg-secondary/50 px-4 py-3 text-sm text-muted-foreground">
+            No payment method on file yet.
           </div>
-          <Button
-            variant="outline"
-            className="mt-4 w-full"
-            onClick={() => toast.info("Card update opens a secure Stripe form.")}
-          >
-            Update card
-          </Button>
         </Panel>
       </div>
 
@@ -313,16 +440,8 @@ export function PlanBillingTab() {
                 <Button
                   className="mt-5 w-full"
                   variant={isCurrent ? "outline" : "default"}
-                  disabled={isCurrent}
-                  onClick={() => {
-                    setCurrent(p.id);
-                    toast.success(`Plan switched to ${p.name}`, {
-                      description:
-                        cycle === "annual"
-                          ? "Billed annually — you saved 20%."
-                          : "Billed monthly. Cancel any time.",
-                    });
-                  }}
+                  disabled={isCurrent || switching || !planReady}
+                  onClick={() => void switchPlan(p)}
                 >
                   {isCurrent ? "Current plan" : `Switch to ${p.name}`}
                 </Button>
@@ -332,33 +451,8 @@ export function PlanBillingTab() {
         </div>
       </Panel>
 
-      <Panel title="Invoices" className="p-0">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Plan</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-              <TableHead className="text-right">Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {invoices.map((inv) => (
-              <TableRow key={inv.date}>
-                <TableCell className="text-sm">{inv.date}</TableCell>
-                <TableCell className="text-sm text-muted-foreground">{inv.plan}</TableCell>
-                <TableCell className="text-right text-sm font-semibold">
-                  {formatCurrency(inv.amount)}
-                </TableCell>
-                <TableCell className="text-right">
-                  <Badge variant="secondary" className="bg-leaf/15 text-leaf">
-                    {inv.status}
-                  </Badge>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      <Panel title="Invoices">
+        <p className="text-sm text-muted-foreground">No invoices yet.</p>
       </Panel>
     </div>
   );
@@ -366,8 +460,72 @@ export function PlanBillingTab() {
 
 /* ============================== Team ============================== */
 
-export function TeamTab() {
+const ROLE_LABELS: Record<MembershipRole, string> = {
+  owner: "Owner",
+  manager: "Manager",
+  staff: "Staff",
+};
+
+export function TeamTab({ tenantSlug }: { tenantSlug: string | null }) {
+  const [members, setMembers] = useState<TenantMembership[]>([]);
+  const [loading, setLoading] = useState(true);
   const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState<MembershipRole>("staff");
+  const [inviting, setInviting] = useState(false);
+
+  useEffect(() => {
+    if (!tenantSlug) {
+      setMembers([]);
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    listTenantMemberships(tenantSlug)
+      .then((rows) => {
+        if (!cancelled) setMembers(rows);
+      })
+      .catch((e) => {
+        if (!cancelled) toast.error("Couldn't load your team", { description: errorMessage(e) });
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [tenantSlug]);
+
+  const sendInvite = async () => {
+    const email = inviteEmail.trim();
+    if (!email) {
+      toast.error("Add an email address to invite a teammate.");
+      return;
+    }
+    if (!tenantSlug) {
+      toast.error("Select a store first.");
+      return;
+    }
+    setInviting(true);
+    try {
+      const membership = await inviteTenantMember(tenantSlug, email, inviteRole);
+      setMembers((rows) => [...rows, membership]);
+      setInviteEmail("");
+      toast.success(`${membership.user_email} added to the team`, {
+        description: "They now have access to this store's dashboard.",
+      });
+    } catch (e) {
+      if (e instanceof ApiError && e.status === 404) {
+        toast.error("No account with that email", {
+          description: "Ask your teammate to sign up for Sartorial first.",
+        });
+      } else {
+        toast.error("Couldn't add teammate", { description: errorMessage(e) });
+      }
+    } finally {
+      setInviting(false);
+    }
+  };
 
   return (
     <div className="grid gap-6 lg:grid-cols-3">
@@ -382,21 +540,52 @@ export function TeamTab() {
               <TableHead>Member</TableHead>
               <TableHead className="hidden sm:table-cell">Email</TableHead>
               <TableHead>Role</TableHead>
-              <TableHead className="hidden text-right sm:table-cell">Last active</TableHead>
+              <TableHead className="hidden text-right sm:table-cell">Joined</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell colSpan={4} className="py-10 text-center text-sm text-muted-foreground">
-                No team members yet. Invite teammates to collaborate on this store.
-              </TableCell>
-            </TableRow>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={4} className="py-10 text-center text-sm text-muted-foreground">
+                  Loading team…
+                </TableCell>
+              </TableRow>
+            ) : members.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} className="py-10 text-center text-sm text-muted-foreground">
+                  {tenantSlug
+                    ? "No team members yet. Invite teammates to collaborate on this store."
+                    : "Select a store to manage its team."}
+                </TableCell>
+              </TableRow>
+            ) : (
+              members.map((m) => (
+                <TableRow key={m.id}>
+                  <TableCell className="text-sm font-medium">
+                    {m.user_name.trim() || m.user_email}
+                  </TableCell>
+                  <TableCell className="hidden text-sm text-muted-foreground sm:table-cell">
+                    {m.user_email}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="secondary">{ROLE_LABELS[m.role] ?? m.role}</Badge>
+                  </TableCell>
+                  <TableCell className="hidden text-right text-sm text-muted-foreground sm:table-cell">
+                    {new Date(m.created_at).toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </Panel>
 
       <div className="space-y-6">
-        <Panel title="Invite a teammate">
+        <Panel title="Add a teammate">
           <div className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="invite-email">Email address</Label>
@@ -408,21 +597,25 @@ export function TeamTab() {
                 onChange={(e) => setInviteEmail(e.target.value)}
               />
             </div>
-            <Button
-              className="w-full"
-              onClick={() => {
-                if (!inviteEmail.trim()) {
-                  toast.error("Add an email address to invite a teammate.");
-                  return;
-                }
-                toast.success(`Invite sent to ${inviteEmail.trim()}`, {
-                  description: "They'll appear here once they accept.",
-                });
-                setInviteEmail("");
-              }}
-            >
-              Send invite
+            <div className="space-y-1.5">
+              <Label>Role</Label>
+              <Select value={inviteRole} onValueChange={(v) => setInviteRole(v as MembershipRole)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="staff">Staff</SelectItem>
+                  <SelectItem value="manager">Manager</SelectItem>
+                  <SelectItem value="owner">Owner</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button className="w-full" disabled={inviting} onClick={() => void sendInvite()}>
+              {inviting ? "Adding…" : "Add to team"}
             </Button>
+            <p className="text-xs text-muted-foreground">
+              They need an existing Sartorial account — we add them right away.
+            </p>
           </div>
         </Panel>
         <Panel title="What each role can do">
@@ -432,14 +625,10 @@ export function TeamTab() {
               closing the store.
             </li>
             <li>
-              <span className="font-semibold">Manager</span> — products, designs, discounts and
-              orders.
+              <span className="font-semibold">Manager</span> — products, orders and team members.
             </li>
             <li>
-              <span className="font-semibold">Fulfilment</span> — sees orders and delivery only.
-            </li>
-            <li>
-              <span className="font-semibold">Viewer</span> — read-only access to analytics.
+              <span className="font-semibold">Staff</span> — day-to-day catalogue and order work.
             </li>
           </ul>
         </Panel>

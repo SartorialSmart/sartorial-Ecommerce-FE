@@ -122,9 +122,7 @@ export function AddProductDialog({
           price: parsedPrice.toFixed(2),
           stock: parsedStock,
           categoryId:
-            categoryId === NO_CATEGORY || categoryId === NEW_CATEGORY
-              ? null
-              : Number(categoryId),
+            categoryId === NO_CATEGORY || categoryId === NEW_CATEGORY ? null : Number(categoryId),
           newCategory: categoryId === NEW_CATEGORY ? newCategory : "",
         },
         storeSlug || null,
@@ -153,15 +151,15 @@ export function AddProductDialog({
             <PackagePlus className="h-5 w-5 text-primary" /> Add product
           </DialogTitle>
           <DialogDescription>
-            Create a simple, ready-to-sell product in your store. Variants and
-            options can be added afterwards.
+            Create a simple, ready-to-sell product in your store. Variants and options can be added
+            afterwards.
           </DialogDescription>
         </DialogHeader>
 
         {!canManageProducts ? (
           <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-            Product management is only available to seller accounts. Your account
-            is a customer account — ask us to upgrade it to a seller.
+            Product management is only available to seller accounts. Your account is a customer
+            account — ask us to upgrade it to a seller.
           </p>
         ) : metaLoading ? (
           <p className="flex items-center gap-2 py-6 text-sm text-muted-foreground">
