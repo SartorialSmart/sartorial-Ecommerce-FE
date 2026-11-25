@@ -39,6 +39,7 @@ import { listAdminOrders, type AdminOrder } from "@/lib/api/orders";
 import type { TenantStore } from "@/lib/api/types";
 import { useAuth } from "@/lib/auth/use-auth";
 import { formatCompactCurrency, formatCurrency } from "@/lib/currency";
+import { storefrontUrl } from "@/lib/storefront-host";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -265,9 +266,9 @@ function DashboardPage() {
           </div>
           <div className="flex gap-3">
             <Button asChild variant="outline">
-              <Link to="/designer" search={{ template: undefined }}>
+              <a href={storefrontUrl(storeSlug ?? "your-store")} target="_blank" rel="noreferrer">
                 View storefront
-              </Link>
+              </a>
             </Button>
             <Button onClick={() => setAddProductOpen(true)}>
               <Plus className="h-4 w-4" /> Add product

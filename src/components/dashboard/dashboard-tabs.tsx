@@ -162,7 +162,7 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
     currency && !currencies.some((c) => c.value === currency)
       ? [{ value: currency, label: currency }, ...currencies]
       : currencies;
-  const storefrontHost = `${domain || tenantSlug || "your-store"}.sartorialecommerce.com`;
+  const storefrontHost = `${domain || tenantSlug || "your-store"}.ecommerce.sartorialsmart.com`;
 
   return (
     <div className="grid gap-6 lg:grid-cols-5">

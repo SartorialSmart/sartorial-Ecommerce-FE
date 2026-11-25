@@ -18,6 +18,15 @@ export interface AdminSettingsResponse {
   tenant: string | null;
 }
 
+export interface PublicConfigResponse {
+  settings: Record<string, unknown>;
+  tenant: string | null;
+}
+
+export async function getPublicConfig(tenantSlug: string | null): Promise<PublicConfigResponse> {
+  return apiRequest<PublicConfigResponse>("/storeconfig/", { tenantSlug, auth: false });
+}
+
 export async function getAdminSettings(tenantSlug: string | null): Promise<AdminSettingsResponse> {
   return apiRequest<AdminSettingsResponse>("/admin/storeconfig/settings/", { tenantSlug });
 }

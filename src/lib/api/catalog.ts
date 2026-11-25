@@ -13,6 +13,22 @@ export async function listMyStores(): Promise<TenantStore[]> {
   return unwrapResults(data);
 }
 
+export interface PublicProduct {
+  id: string;
+  title: string;
+  price_from: string | null;
+  primary_image: string | null;
+  stock_available: number;
+}
+
+export async function listPublicProducts(tenantSlug: string): Promise<PublicProduct[]> {
+  const data = await apiRequest<PublicProduct[] | { results?: PublicProduct[] } | null>(
+    "/catalog/products/",
+    { tenantSlug, auth: false },
+  );
+  return unwrapResults(data);
+}
+
 export async function listCategories(tenantSlug: string | null): Promise<Category[]> {
   const data = await apiRequest<Category[] | { results?: Category[] } | null>(
     "/catalog/categories/",

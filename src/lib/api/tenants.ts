@@ -1,6 +1,22 @@
 import { apiRequest } from "./client";
 import type { TenantStore } from "./types";
 
+export interface PublicTenant {
+  id: string;
+  name: string;
+  slug: string;
+  type: string;
+  logo_url: string;
+  domain: string | null;
+}
+
+export async function lookupTenant(slug: string): Promise<PublicTenant> {
+  return apiRequest<PublicTenant>(`/stores/lookup/?slug=${encodeURIComponent(slug)}`, {
+    tenantSlug: null,
+    auth: false,
+  });
+}
+
 export type MembershipRole = "owner" | "manager" | "staff";
 
 export interface TenantMembership {

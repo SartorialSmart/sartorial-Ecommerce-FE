@@ -407,7 +407,7 @@ function SetupPage() {
                   <Label htmlFor="domain">Your storefront address</Label>
                   <div className="flex items-center overflow-hidden rounded-md border">
                     <span className="border-r bg-secondary px-3 py-2.5 text-sm text-muted-foreground">
-                      sartorialecommerce.com/
+                      ecommerce.sartorialsmart.com/
                     </span>
                     <Input
                       id="domain"

@@ -1,6 +1,6 @@
 import { ArrowRight, Menu, ShoppingBag, Star } from "lucide-react";
 
-import { productsFor, textileWords, type StoreTemplate } from "@/data/catalog";
+import { productsFor, textileWords, type Product, type StoreTemplate } from "@/data/catalog";
 import { formatCurrency } from "@/lib/currency";
 
 export interface StorefrontOverrides {
@@ -14,6 +14,7 @@ export interface StorefrontOverrides {
   showMarquee?: boolean;
   showTestimonial?: boolean;
   showCta?: boolean;
+  products?: Product[];
 }
 
 const DEFAULTS = {
@@ -38,7 +39,7 @@ export function StorefrontView({
   const fontDisplay = o.fontDisplay ?? t.fontDisplay;
   const name = o.storeName ?? template.name;
   const tagline = o.tagline ?? template.tagline;
-  const items = productsFor(template.slug);
+  const items = o.products ?? productsFor(template.slug);
 
   return (
     <div

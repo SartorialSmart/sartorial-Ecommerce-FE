@@ -15,12 +15,14 @@ import {
   Wallet,
 } from "lucide-react";
 
+import { HostedStorefront } from "@/components/storefront/hosted-storefront";
 import { SiteNav } from "@/components/site/nav";
 import { SiteFooter } from "@/components/site/footer";
 import { Button } from "@/components/ui/button";
 import { heroImage, templates, testimonials, textileWords } from "@/data/catalog";
 import { getPlans, loadPlans, type Plan } from "@/data/catalog";
 import { formatCurrency } from "@/lib/currency";
+import { currentStoreSlug } from "@/lib/storefront-host";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -44,8 +46,13 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: LandingPage,
+  component: RootPage,
 });
+
+function RootPage() {
+  const slug = currentStoreSlug();
+  return slug ? <HostedStorefront slug={slug} /> : <LandingPage />;
+}
 
 const features = [
   {

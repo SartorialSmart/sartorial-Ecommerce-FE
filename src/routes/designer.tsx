@@ -141,7 +141,7 @@ function DesignerPage() {
     setHeroLayout(t.slug === "lagos" ? "overlay" : "split");
   };
 
-  const storefrontHost = `${domain || tenantSlug || "your-store"}.sartorialecommerce.com`;
+  const storefrontHost = `${domain || tenantSlug || "your-store"}.ecommerce.sartorialsmart.com`;
 
   const publish = async () => {
     if (publishing) return;
