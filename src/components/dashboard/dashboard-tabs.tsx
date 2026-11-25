@@ -37,6 +37,7 @@ import {
   type TenantMembership,
 } from "@/lib/api/tenants";
 import { currencies, DEFAULT_CURRENCY, formatCurrency } from "@/lib/currency";
+import { normalizeStoreSlug, validateStoreSlug } from "@/lib/storefront-host";
 
 function Panel({
   title,
@@ -120,6 +121,12 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
 
   const saveProfile = async () => {
     if (!loaded || saving) return;
+    const slug = normalizeStoreSlug(domain);
+    const slugError = slug ? validateStoreSlug(slug) : null;
+    if (slugError) {
+      toast.error("That storefront address isn’t available", { description: slugError });
+      return;
+    }
     setSaving(true);
     try {
       await patchAdminSettings(
@@ -128,7 +135,7 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
           "store.tagline": tagline.trim(),
           "store.city": city,
           "store.currency": currency,
-          "store.domain": domain.trim(),
+          "store.domain": slug,
           "shipping.flat_rate": flatRate || "0",
           "shipping.free_threshold": freeThreshold || "0",
         },
@@ -246,7 +253,8 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
             <Badge variant="secondary">Primary</Badge>
           </div>
           <p className="mt-3 text-xs text-muted-foreground">
-            Your free Sartorial address. Custom domains connect in a later release.
+            Your free Sartorial address. Names like mail, api and support are reserved. Custom
+            domains connect in a later release.
           </p>
         </Panel>
 

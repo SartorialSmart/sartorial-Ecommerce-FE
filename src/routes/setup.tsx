@@ -19,6 +19,7 @@ import { getPlans, loadPlans, templates, type Plan, type TemplateSlug } from "@/
 import { setupStore } from "@/lib/api/tenants";
 import { useAuth } from "@/lib/auth/use-auth";
 import { currencies, DEFAULT_CURRENCY, formatCurrency, type CurrencyCode } from "@/lib/currency";
+import { normalizeStoreSlug, validateStoreSlug } from "@/lib/storefront-host";
 
 export const Route = createFileRoute("/setup")({
   head: () => ({
@@ -123,11 +124,18 @@ function SetupPage() {
       setStep(0);
       return;
     }
+    const slug = normalizeStoreSlug(domain);
+    const slugError = slug ? validateStoreSlug(slug) : null;
+    if (slugError) {
+      toast.error("That storefront address isn’t available", { description: slugError });
+      setStep(3);
+      return;
+    }
     setLaunching(true);
     try {
       await setupStore({
         name: storeName.trim(),
-        slug: domain.trim() || undefined,
+        slug: slug || undefined,
         tagline: tagline.trim() || undefined,
         city,
         currency,
@@ -160,7 +168,7 @@ function SetupPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-50 border-b bg-ink text-ink-foreground">
-        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
+        <div className="mx-auto flex h-18 max-w-5xl items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-4">
             <Logo compact />
             <span className="hidden text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted sm:block">
@@ -419,7 +427,8 @@ function SetupPage() {
                     />
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Custom domains (like yourdomain.com) connect in Dashboard → Store settings.
+                    Names like mail, api, billing and support are reserved. Custom domains connect
+                    in Dashboard → Store settings.
                   </p>
                 </div>
                 <div>

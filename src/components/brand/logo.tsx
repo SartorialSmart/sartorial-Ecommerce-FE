@@ -8,7 +8,7 @@ export function Logo({ compact = false }: { compact?: boolean }) {
       <img
         src={logoMark}
         alt="Sartorial"
-        className={`block ${compact ? "h-6" : "h-8"}`}
+        className={`block ${compact ? "h-18" : "h-8"}`}
         decoding="async"
       />
       {!compact && (

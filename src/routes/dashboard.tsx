@@ -211,7 +211,7 @@ function DashboardPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-50 border-b bg-ink text-ink-foreground">
-        <div className="flex h-14 items-center justify-between gap-4 px-4 sm:px-6">
+        <div className="flex h-18 items-center justify-between gap-4 px-4 sm:px-6">
           <div className="flex items-center gap-4">
             <Logo compact />
             <Select value={storeSlug ?? ""} onValueChange={(v) => setStoreSlug(v || null)}>

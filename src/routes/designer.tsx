@@ -177,7 +177,7 @@ function DesignerPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-50 border-b bg-ink text-ink-foreground">
-        <div className="flex h-14 items-center justify-between px-4 sm:px-6">
+        <div className="flex h-18 items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-4">
             <Logo compact />
             <span className="hidden text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted sm:block">
