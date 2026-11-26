@@ -20,6 +20,7 @@ import { ErpLinkCard } from "@/components/dashboard/erp-link-card";
 import { InvoiceManagementTab } from "@/components/dashboard/invoice-management";
 import { InventoryManagementTab } from "@/components/dashboard/inventory-management";
 import { ProductManagementTab } from "@/components/dashboard/product-management";
+import { SalesReportingTab } from "@/components/dashboard/sales-reporting";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -327,6 +328,7 @@ function DashboardPage() {
             <TabsTrigger value="inventory">Inventory</TabsTrigger>
             <TabsTrigger value="coupons">Coupons</TabsTrigger>
             <TabsTrigger value="sales">Sales &amp; invoices</TabsTrigger>
+            <TabsTrigger value="sales-reporting">Sales reporting</TabsTrigger>
             <TabsTrigger value="erp">ERP link</TabsTrigger>
             <TabsTrigger value="settings">Store settings</TabsTrigger>
 
@@ -566,6 +568,10 @@ function DashboardPage() {
 
           <TabsContent value="sales" className="mt-6">
             <InvoiceManagementTab tenantSlug={storeSlug} />
+          </TabsContent>
+
+          <TabsContent value="sales-reporting" className="mt-6">
+            <SalesReportingTab tenantSlug={storeSlug} />
           </TabsContent>
 
           <TabsContent value="erp" className="mt-6">

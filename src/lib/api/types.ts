@@ -87,6 +87,8 @@ export interface AdminProduct {
   is_active: boolean;
   is_flash_sale: boolean;
   discount_percent: string | null;
+  vat_rate_percent: string | null;
+  vat_flat_amount: string | null;
   features: unknown;
   primary_image: string | null;
   variant_count: number;

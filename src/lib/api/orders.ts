@@ -31,9 +31,11 @@ export interface AdminOrder {
   fx_rate_locked: string;
   subtotal_base: string;
   discount_base: string;
+  vat_base: string;
   total_base: string;
   subtotal_charged: string;
   discount_charged: string;
+  vat_charged: string;
   total_charged: string;
   contact_email: string;
   contact_name: string;

@@ -183,6 +183,10 @@ export function ErpLinkCard({ tenantSlug }: { tenantSlug: string | null }) {
                 <li>{status?.sync_endpoints.catalog ?? "/api/v1/erp/catalog/sync/"}</li>
                 <li>{status?.sync_endpoints.inventory ?? "/api/v1/erp/inventory/"}</li>
               </ul>
+              <p className="mt-3 text-xs text-muted-foreground">
+                Product payloads can include discount_percent, vat_rate_percent, or vat_flat_amount.
+                ERP VAT overrides store VAT for that product.
+              </p>
             </>
           )}
         </div>

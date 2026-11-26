@@ -92,6 +92,10 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
   const [providers, setProviders] = useState<string[]>(["mock"]);
   const [flatRate, setFlatRate] = useState("0");
   const [freeThreshold, setFreeThreshold] = useState("0");
+  const [vatEnabled, setVatEnabled] = useState(false);
+  const [vatType, setVatType] = useState<"percentage" | "flat">("percentage");
+  const [vatPercent, setVatPercent] = useState("0");
+  const [vatFlatAmount, setVatFlatAmount] = useState("0");
   const [logoUrl, setLogoUrl] = useState("");
   const [logoPublicId, setLogoPublicId] = useState("");
   const [logoUploading, setLogoUploading] = useState(false);
@@ -114,6 +118,11 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
         setProviders(Array.isArray(enabled) ? enabled.map(String) : ["mock"]);
         setFlatRate(stringSetting(map, "shipping.flat_rate", "0") || "0");
         setFreeThreshold(stringSetting(map, "shipping.free_threshold", "0") || "0");
+        setVatEnabled(map["tax.vat_enabled"] === true);
+        const storedVatType = stringSetting(map, "tax.vat_type", "percentage");
+        setVatType(storedVatType === "flat" ? "flat" : "percentage");
+        setVatPercent(stringSetting(map, "tax.vat_percent", "0") || "0");
+        setVatFlatAmount(stringSetting(map, "tax.vat_flat_amount", "0") || "0");
         setLoaded(true);
       })
       .catch((e) => {
@@ -160,6 +169,17 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
       toast.error("That storefront address isn’t available", { description: slugError });
       return;
     }
+    if (vatEnabled && vatType === "percentage") {
+      const rate = Number(vatPercent);
+      if (!Number.isFinite(rate) || rate < 0 || rate > 100) {
+        toast.error("VAT percentage must be between 0 and 100.");
+        return;
+      }
+    }
+    if (vatEnabled && vatType === "flat" && Number(vatFlatAmount) < 0) {
+      toast.error("VAT flat fee cannot be negative.");
+      return;
+    }
     setSaving(true);
     try {
       await patchAdminSettings(
@@ -171,13 +191,17 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
           "store.domain": slug,
           "shipping.flat_rate": flatRate || "0",
           "shipping.free_threshold": freeThreshold || "0",
+          "tax.vat_enabled": vatEnabled,
+          "tax.vat_type": vatType,
+          "tax.vat_percent": vatPercent || "0",
+          "tax.vat_flat_amount": vatFlatAmount || "0",
           ...(logoUrl ? { "store.logo_url": logoUrl, "store.logo": logoUrl } : {}),
           ...(logoPublicId ? { "store.logo_public_id": logoPublicId } : {}),
         },
         tenantSlug,
       );
       toast.success("Store profile saved", {
-        description: "Changes are live on your storefront immediately.",
+        description: "VAT changes apply to new orders and invoices.",
       });
     } catch (e) {
       toast.error("Couldn't save changes", { description: errorMessage(e) });
@@ -367,6 +391,64 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
                 0 disables the free-shipping threshold.
               </p>
             </div>
+          </div>
+        </Panel>
+
+        <Panel title="VAT charges" note="Added to order totals, invoices, and sales reports.">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm">Charge VAT</span>
+              <Switch checked={vatEnabled} onCheckedChange={setVatEnabled} />
+            </div>
+            {vatEnabled && (
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="vat-type">VAT type</Label>
+                  <Select
+                    value={vatType}
+                    onValueChange={(value) => setVatType(value === "flat" ? "flat" : "percentage")}
+                  >
+                    <SelectTrigger id="vat-type">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="percentage">Percentage</SelectItem>
+                      <SelectItem value="flat">Flat fee</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {vatType === "percentage" ? (
+                  <div className="space-y-1.5">
+                    <Label htmlFor="vat-percent">VAT percentage (%)</Label>
+                    <Input
+                      id="vat-percent"
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="any"
+                      value={vatPercent}
+                      onChange={(e) => setVatPercent(e.target.value)}
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    <Label htmlFor="vat-flat">VAT flat fee ({currency})</Label>
+                    <Input
+                      id="vat-flat"
+                      type="number"
+                      min="0"
+                      step="any"
+                      value={vatFlatAmount}
+                      onChange={(e) => setVatFlatAmount(e.target.value)}
+                    />
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Flat fees are charged per item. ERP products use VAT and discount values from the
+                  ERP; store VAT applies when an ERP product has no VAT value.
+                </p>
+              </div>
+            )}
           </div>
         </Panel>
       </div>

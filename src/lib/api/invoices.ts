@@ -16,6 +16,7 @@ export interface AdminInvoice {
   currency: string;
   subtotal: string;
   discount: string;
+  vat: string;
   total: string;
   issue_date: string;
   due_date: string | null;

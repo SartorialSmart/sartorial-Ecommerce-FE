@@ -285,6 +285,7 @@ export function ProductManagementTab({
             <TableRow>
               <TableHead>Product</TableHead>
               <TableHead>Category</TableHead>
+              <TableHead>Pricing rules</TableHead>
               <TableHead className="text-right">Price from</TableHead>
               <TableHead className="text-right">Variants</TableHead>
               <TableHead>Published</TableHead>
@@ -294,19 +295,24 @@ export function ProductManagementTab({
           <TableBody>
             {loading && products.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="py-10 text-center text-sm text-muted-foreground">
+                <TableCell colSpan={7} className="py-10 text-center text-sm text-muted-foreground">
                   <Loader2 className="mx-auto h-4 w-4 animate-spin" /> Loading products…
                 </TableCell>
               </TableRow>
             ) : products.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="py-10 text-center text-sm text-muted-foreground">
+                <TableCell colSpan={7} className="py-10 text-center text-sm text-muted-foreground">
                   No products found. Add your first product to start selling.
                 </TableCell>
               </TableRow>
             ) : (
               products.map((product) => {
                 const category = categories.find((c) => c.id === product.category);
+                const discount = Number(product.discount_percent ?? 0);
+                const vatRate =
+                  product.vat_rate_percent === null ? null : Number(product.vat_rate_percent);
+                const vatFlat =
+                  product.vat_flat_amount === null ? null : Number(product.vat_flat_amount);
                 return (
                   <TableRow key={product.id}>
                     <TableCell>
@@ -332,6 +338,12 @@ export function ProductManagementTab({
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {category?.name ?? "—"}
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
+                      {discount > 0 && <p>{discount}% off</p>}
+                      {vatRate !== null && <p>VAT {vatRate}%</p>}
+                      {vatFlat !== null && <p>VAT {formatCurrency(vatFlat)}</p>}
+                      {discount === 0 && vatRate === null && vatFlat === null && <p>—</p>}
                     </TableCell>
                     <TableCell className="text-right text-sm font-semibold">
                       {product.price_from ? formatCurrency(Number(product.price_from)) : "—"}

@@ -654,6 +654,10 @@ function OrdersPage() {
                       -{formatCurrency(Number(selected.discount_charged || selected.discount_base))}
                     </span>
                   </div>
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>VAT</span>
+                    <span>{formatCurrency(Number(selected.vat_charged || selected.vat_base))}</span>
+                  </div>
                   <div className="flex justify-between font-bold">
                     <span>Total</span>
                     <span>
