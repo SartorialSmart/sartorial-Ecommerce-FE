@@ -16,6 +16,8 @@ import { Logo } from "@/components/brand/logo";
 import { AddProductDialog } from "@/components/dashboard/add-product-dialog";
 import { CouponManagementTab } from "@/components/dashboard/coupon-management";
 import { PlanBillingTab, StoreSettingsTab, TeamTab } from "@/components/dashboard/dashboard-tabs";
+import { ErpLinkCard } from "@/components/dashboard/erp-link-card";
+import { InvoiceManagementTab } from "@/components/dashboard/invoice-management";
 import { InventoryManagementTab } from "@/components/dashboard/inventory-management";
 import { ProductManagementTab } from "@/components/dashboard/product-management";
 import { Badge } from "@/components/ui/badge";
@@ -219,7 +221,7 @@ function DashboardPage() {
       <header className="sticky top-0 z-50 border-b bg-ink text-ink-foreground">
         <div className="flex h-18 items-center justify-between gap-4 px-4 sm:px-6">
           <div className="flex items-center gap-4">
-            <Logo compact />
+            <Logo />
             <Select value={storeSlug ?? ""} onValueChange={(v) => setStoreSlug(v || null)}>
               <SelectTrigger className="w-44 border-ink-line bg-transparent text-ink-foreground sm:w-56">
                 <SelectValue placeholder={stores.length ? "Select store" : "No stores yet"} />
@@ -324,6 +326,8 @@ function DashboardPage() {
             <TabsTrigger value="products">Products</TabsTrigger>
             <TabsTrigger value="inventory">Inventory</TabsTrigger>
             <TabsTrigger value="coupons">Coupons</TabsTrigger>
+            <TabsTrigger value="sales">Sales &amp; invoices</TabsTrigger>
+            <TabsTrigger value="erp">ERP link</TabsTrigger>
             <TabsTrigger value="settings">Store settings</TabsTrigger>
 
             <TabsTrigger value="plan">Plan &amp; billing</TabsTrigger>
@@ -558,6 +562,14 @@ function DashboardPage() {
 
           <TabsContent value="coupons" className="mt-6">
             <CouponManagementTab tenantSlug={storeSlug} />
+          </TabsContent>
+
+          <TabsContent value="sales" className="mt-6">
+            <InvoiceManagementTab tenantSlug={storeSlug} />
+          </TabsContent>
+
+          <TabsContent value="erp" className="mt-6">
+            <ErpLinkCard tenantSlug={storeSlug} />
           </TabsContent>
 
           <TabsContent value="settings" className="mt-6">

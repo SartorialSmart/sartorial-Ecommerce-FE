@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { CreditCard, Globe, Landmark, ShieldCheck, Wallet } from "lucide-react";
+import { useEffect, useState, type ChangeEvent } from "react";
+import { CreditCard, Globe, Landmark, ShieldCheck, Upload, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/table";
 import { loadPlans, type Plan } from "@/data/catalog";
 import { ApiError } from "@/lib/api/client";
+import { uploadStoreLogo } from "@/lib/api/logos";
 import {
   getAdminSettings,
   patchAdminSettings,
@@ -91,6 +92,9 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
   const [providers, setProviders] = useState<string[]>(["mock"]);
   const [flatRate, setFlatRate] = useState("0");
   const [freeThreshold, setFreeThreshold] = useState("0");
+  const [logoUrl, setLogoUrl] = useState("");
+  const [logoPublicId, setLogoPublicId] = useState("");
+  const [logoUploading, setLogoUploading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -104,6 +108,8 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
         setCity(stringSetting(map, "store.city") || CITIES[0]!);
         setCurrency(stringSetting(map, "store.currency") || DEFAULT_CURRENCY);
         setDomain(stringSetting(map, "store.domain"));
+        setLogoUrl(stringSetting(map, "store.logo_url"));
+        setLogoPublicId(stringSetting(map, "store.logo_public_id"));
         const enabled = map["payments.providers"];
         setProviders(Array.isArray(enabled) ? enabled.map(String) : ["mock"]);
         setFlatRate(stringSetting(map, "shipping.flat_rate", "0") || "0");
@@ -118,6 +124,33 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
       cancelled = true;
     };
   }, [tenantSlug]);
+
+  const uploadLogo = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setLogoUploading(true);
+    try {
+      const uploaded = await uploadStoreLogo(file);
+      setLogoUrl(uploaded.url);
+      setLogoPublicId(uploaded.publicId);
+      await patchAdminSettings(
+        {
+          "store.logo_url": uploaded.url,
+          "store.logo": uploaded.url,
+          "store.logo_public_id": uploaded.publicId,
+        },
+        tenantSlug,
+      );
+      toast.success("Store logo updated", {
+        description: "Your storefront and new invoices will use this logo.",
+      });
+    } catch (e) {
+      toast.error("Couldn't upload the logo", { description: errorMessage(e) });
+    } finally {
+      setLogoUploading(false);
+      event.target.value = "";
+    }
+  };
 
   const saveProfile = async () => {
     if (!loaded || saving) return;
@@ -138,6 +171,8 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
           "store.domain": slug,
           "shipping.flat_rate": flatRate || "0",
           "shipping.free_threshold": freeThreshold || "0",
+          ...(logoUrl ? { "store.logo_url": logoUrl, "store.logo": logoUrl } : {}),
+          ...(logoPublicId ? { "store.logo_public_id": logoPublicId } : {}),
         },
         tenantSlug,
       );
@@ -178,6 +213,33 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
         note="What customers see on your storefront and invoices."
         className="lg:col-span-3"
       >
+        <div className="mb-5 flex flex-wrap items-center gap-3 rounded-xl border bg-secondary/40 p-3">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-background">
+            {logoUrl ? (
+              <img src={logoUrl} alt="Store logo" className="h-full w-full object-contain" />
+            ) : (
+              <span className="text-xs font-bold text-muted-foreground">LOGO</span>
+            )}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold">Store logo</p>
+            <p className="text-xs text-muted-foreground">
+              Used on your storefront and in generated invoices.
+            </p>
+          </div>
+          <Button asChild variant="outline" size="sm" disabled={logoUploading}>
+            <label htmlFor="profile-logo" className="cursor-pointer">
+              <Upload className="h-4 w-4" /> {logoUploading ? "Uploading…" : "Replace logo"}
+            </label>
+          </Button>
+          <input
+            id="profile-logo"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(event) => void uploadLogo(event)}
+          />
+        </div>
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="profile-store">Store name</Label>

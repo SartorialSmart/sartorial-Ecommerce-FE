@@ -38,7 +38,7 @@ function TemplatePreviewPage() {
       <div className="sticky top-0 z-50 border-b border-ink-line bg-ink">
         <div className="mx-auto flex h-18 max-w-7xl flex-wrap items-center justify-between gap-2 px-4 sm:px-6">
           <div className="flex items-center gap-4">
-            <Logo compact />
+            <Logo />
             <span className="hidden text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted sm:block">
               Default design preview · {template.name}
             </span>

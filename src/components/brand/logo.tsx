@@ -2,18 +2,13 @@ import { Link } from "@tanstack/react-router";
 
 import logoMark from "@/assets/Logo-2.png";
 
-export function Logo({ compact = false }: { compact?: boolean }) {
+export function Logo() {
   return (
-    <Link to="/" className="flex items-center gap-2" aria-label="Sartorial home">
-      <img
-        src={logoMark}
-        alt="Sartorial"
-        className={`block ${compact ? "h-18" : "h-8"}`}
-        decoding="async"
-      />
-      {!compact && (
-        <span className="font-display text-xl font-extrabold tracking-tight">Ecommerce</span>
-      )}
+    <Link to="/" className="flex items-center gap-3" aria-label="Sartorial Ecommerce home">
+      <img src={logoMark} alt="Sartorial" className="block h-18 w-auto shrink-0" decoding="async" />
+      <span className="whitespace-nowrap font-display text-xl font-extrabold tracking-tight">
+        Ecommerce
+      </span>
     </Link>
   );
 }

@@ -179,7 +179,7 @@ function DesignerPage() {
       <header className="sticky top-0 z-50 border-b bg-ink text-ink-foreground">
         <div className="flex h-18 items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-4">
-            <Logo compact />
+            <Logo />
             <span className="hidden text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted sm:block">
               Store designer · {storeName}
             </span>

@@ -11,7 +11,9 @@ function jsonResponse(body: unknown, status = 200): Response {
 }
 
 describe("apiRequest tenant slug header", () => {
-  const fetchMock = vi.fn(async () => jsonResponse({ ok: true }));
+  const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) =>
+    jsonResponse({ ok: true }),
+  );
 
   beforeEach(() => {
     vi.stubGlobal("fetch", fetchMock);

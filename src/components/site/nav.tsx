@@ -26,7 +26,7 @@ export function SiteNav() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-ink-line bg-ink/95 text-ink-foreground backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Logo />
         <nav className="hidden items-center gap-7 text-sm font-medium md:flex">
           {links.map((l) => (

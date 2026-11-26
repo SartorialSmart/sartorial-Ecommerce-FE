@@ -69,6 +69,8 @@ export interface StoreSetupInput {
   accent?: string | undefined;
   accent_fg?: string | undefined;
   font_display?: string | undefined;
+  logo_url?: string | undefined;
+  logo_public_id?: string | undefined;
 }
 
 export async function setupStore(input: StoreSetupInput): Promise<TenantStore> {

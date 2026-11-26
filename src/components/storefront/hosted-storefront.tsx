@@ -32,6 +32,7 @@ function overridesFrom(values: Record<string, unknown>, tenant: PublicTenant): S
   return {
     storeName: text("store.name") || tenant.name,
     tagline: text("store.tagline"),
+    logoUrl: text("store.logo_url") || tenant.logo_url || undefined,
     accent: text("storefront.accent") || undefined,
     accentFg: text("storefront.accent_fg") || undefined,
     fontDisplay: text("storefront.font_display") || undefined,

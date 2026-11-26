@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Check, Rocket } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Rocket, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 import { Logo } from "@/components/brand/logo";
@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getPlans, loadPlans, templates, type Plan, type TemplateSlug } from "@/data/catalog";
+import { uploadStoreLogo } from "@/lib/api/logos";
 import { setupStore } from "@/lib/api/tenants";
 import { useAuth } from "@/lib/auth/use-auth";
 import { currencies, DEFAULT_CURRENCY, formatCurrency, type CurrencyCode } from "@/lib/currency";
@@ -92,6 +93,9 @@ function SetupPage() {
   const [slug, setSlug] = useState<TemplateSlug>("loom");
   const [accentIdx, setAccentIdx] = useState(0);
   const [fontIdx, setFontIdx] = useState(0);
+  const [logoUrl, setLogoUrl] = useState("");
+  const [logoPublicId, setLogoPublicId] = useState("");
+  const [logoUploading, setLogoUploading] = useState(false);
 
   const [domain, setDomain] = useState("");
   const [planId, setPlanId] = useState("asooke");
@@ -114,6 +118,25 @@ function SetupPage() {
   const template = templates.find((t) => t.slug === slug) ?? templates[0]!;
   const accent = accents[accentIdx]!;
   const font = fonts[fontIdx]!;
+
+  const uploadLogo = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setLogoUploading(true);
+    try {
+      const uploaded = await uploadStoreLogo(file);
+      setLogoUrl(uploaded.url);
+      setLogoPublicId(uploaded.publicId);
+      toast.success("Logo added to your storefront.");
+    } catch (e) {
+      toast.error("Couldn't upload that logo", {
+        description: e instanceof Error ? e.message : "Please try again.",
+      });
+    } finally {
+      setLogoUploading(false);
+      event.target.value = "";
+    }
+  };
 
   const launch = async () => {
     if (launching) return;
@@ -145,6 +168,8 @@ function SetupPage() {
         accent: accent.value,
         accent_fg: accent.fg,
         font_display: font.value,
+        logo_url: logoUrl || undefined,
+        logo_public_id: logoPublicId || undefined,
       });
       // The account becomes a seller with its own store — refresh so the
       // dashboard's seller endpoints and role checks see the new role.
@@ -170,7 +195,7 @@ function SetupPage() {
       <header className="sticky top-0 z-50 border-b bg-ink text-ink-foreground">
         <div className="mx-auto flex h-18 max-w-5xl items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-4">
-            <Logo compact />
+            <Logo />
             <span className="hidden text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted sm:block">
               Store setup
             </span>
@@ -340,10 +365,46 @@ function SetupPage() {
             <div>
               <PanelTitle
                 title="Make it yours"
-                note="Choose an accent color and heading font — see it live on the right."
+                note="Add your logo, choose an accent color and heading font — see it live on the right."
               />
               <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr]">
                 <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="setup-logo">Store logo</Label>
+                    <div className="flex items-center gap-3 rounded-xl border bg-secondary/40 p-3">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-background">
+                        {logoUrl ? (
+                          <img
+                            src={logoUrl}
+                            alt="Your store logo"
+                            className="h-full w-full object-contain"
+                          />
+                        ) : (
+                          <span className="text-xs font-bold text-muted-foreground">LOGO</span>
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold">
+                          Used across your storefront and invoices
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          PNG, JPG or SVG with a transparent background works best.
+                        </p>
+                      </div>
+                      <Button asChild variant="outline" size="sm" disabled={logoUploading}>
+                        <label htmlFor="setup-logo" className="cursor-pointer">
+                          <Upload className="h-4 w-4" /> {logoUploading ? "Uploading…" : "Upload"}
+                        </label>
+                      </Button>
+                      <input
+                        id="setup-logo"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(event) => void uploadLogo(event)}
+                      />
+                    </div>
+                  </div>
                   <div>
                     <Label>Accent color</Label>
                     <div className="mt-3 flex flex-wrap gap-2.5">
@@ -392,6 +453,7 @@ function SetupPage() {
                     overrides={{
                       storeName,
                       tagline,
+                      logoUrl,
                       accent: accent.value,
                       accentFg: accent.fg,
                       fontDisplay: font.value,

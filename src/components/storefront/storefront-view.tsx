@@ -4,17 +4,18 @@ import { productsFor, textileWords, type Product, type StoreTemplate } from "@/d
 import { formatCurrency } from "@/lib/currency";
 
 export interface StorefrontOverrides {
-  storeName?: string;
-  tagline?: string;
-  accent?: string;
-  accentFg?: string;
-  fontDisplay?: string;
-  heroLayout?: "split" | "overlay";
-  showAnnouncement?: boolean;
-  showMarquee?: boolean;
-  showTestimonial?: boolean;
-  showCta?: boolean;
-  products?: Product[];
+  storeName?: string | undefined;
+  tagline?: string | undefined;
+  logoUrl?: string | undefined;
+  accent?: string | undefined;
+  accentFg?: string | undefined;
+  fontDisplay?: string | undefined;
+  heroLayout?: "split" | "overlay" | undefined;
+  showAnnouncement?: boolean | undefined;
+  showMarquee?: boolean | undefined;
+  showTestimonial?: boolean | undefined;
+  showCta?: boolean | undefined;
+  products?: Product[] | undefined;
 }
 
 const DEFAULTS = {
@@ -60,12 +61,20 @@ export function StorefrontView({
         style={{ borderBottom: `1px solid ${t.border}` }}
       >
         <div className="flex items-center gap-2">
-          <span
-            className="flex h-8 w-8 items-center justify-center rounded-md font-display text-sm font-bold"
-            style={{ background: accent, color: accentFg }}
-          >
-            {name.charAt(0)}
-          </span>
+          {o.logoUrl ? (
+            <img
+              src={o.logoUrl}
+              alt={name}
+              className="max-h-9 w-auto max-w-[120px] object-contain"
+            />
+          ) : (
+            <span
+              className="flex h-8 w-8 items-center justify-center rounded-md font-display text-sm font-bold"
+              style={{ background: accent, color: accentFg }}
+            >
+              {name.charAt(0)}
+            </span>
+          )}
           <span style={{ fontFamily: fontDisplay }} className="text-lg font-bold tracking-tight">
             {name}
           </span>
