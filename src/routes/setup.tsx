@@ -42,7 +42,7 @@ export const Route = createFileRoute("/setup")({
   component: SetupPage,
 });
 
-const STEPS = ["Store basics", "Default design", "Brand look", "Domain & plan"] as const;
+const STEPS = ["Store Basics", "Default Design", "Brand Look", "Domain & Plan"] as const;
 
 const accents = [
   { label: "Crimson", value: "oklch(0.535 0.205 27)", fg: "oklch(0.985 0.005 85)" },
@@ -68,6 +68,28 @@ const cities = [
   "Dakar, Senegal",
   "Johannesburg, South Africa",
 ];
+
+const TEMPLATE_MOOD_CAPTIONS: Record<string, string> = {
+  "Cool · Minimal · Living dye": "Cool · Minimal · Living Dye",
+};
+
+const TEMPLATE_HIGHLIGHT_CAPTIONS: Record<string, string> = {
+  "Editorial lookbook hero": "Editorial Lookbook Hero",
+  "Weave-story product pages": "Weave-Story Product Pages",
+  "Made-to-order waitlist": "Made-To-Order Waitlist",
+  "Split lookbook hero": "Split Lookbook Hero",
+  "Dye-batch storytelling": "Dye-Batch Storytelling",
+  "Restock notifications": "Restock Notifications",
+  "Cinematic full-bleed hero": "Cinematic Full-Bleed Hero",
+  "Runway drop countdowns": "Runway Drop Countdowns",
+  "VIP early-access list": "VIP Early-Access List",
+};
+
+const PLAN_TAGLINE_CAPTIONS: Record<string, string> = {
+  "Start threading your first sale.": "Start Threading Your First Sale.",
+  "For labels ready to grow loud.": "For Labels Ready To Grow Loud.",
+  "For fashion houses with runway plans.": "For Fashion Houses With Runway Plans.",
+};
 
 function PanelTitle({ title, note }: { title: string; note: string }) {
   return (
@@ -197,7 +219,7 @@ function SetupPage() {
           <div className="flex items-center gap-4">
             <Logo />
             <span className="hidden text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted sm:block">
-              Store setup
+              Store Setup
             </span>
           </div>
           <span className="text-xs text-ink-muted">
@@ -239,12 +261,12 @@ function SetupPage() {
           {step === 0 && (
             <div>
               <PanelTitle
-                title="Tell us about your label"
+                title="Tell Us About Your Label"
                 note="This shapes your storefront, checkout currency and shipping defaults."
               />
               <div className="grid gap-5 sm:grid-cols-2">
                 <div className="space-y-1.5">
-                  <Label htmlFor="setup-store">Store name</Label>
+                  <Label htmlFor="setup-store">Store Name</Label>
                   <Input
                     id="setup-store"
                     value={storeName}
@@ -253,7 +275,7 @@ function SetupPage() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="setup-tagline">Hero tagline</Label>
+                  <Label htmlFor="setup-tagline">Hero Tagline</Label>
                   <Input
                     id="setup-tagline"
                     value={tagline}
@@ -262,7 +284,7 @@ function SetupPage() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>City &amp; country</Label>
+                  <Label>City &amp; Country</Label>
                   <Select value={city} onValueChange={setCity}>
                     <SelectTrigger>
                       <SelectValue />
@@ -295,7 +317,7 @@ function SetupPage() {
                   </Select>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>What do you sell?</Label>
+                  <Label>What Do You Sell?</Label>
                   <Select value={category} onValueChange={setCategory}>
                     <SelectTrigger>
                       <SelectValue />
@@ -318,7 +340,7 @@ function SetupPage() {
           {step === 1 && (
             <div>
               <PanelTitle
-                title="Pick a default design"
+                title="Pick A Default Design"
                 note="Every design is fully editable later in the store designer — nothing is locked."
               />
               <div className="grid gap-4 sm:grid-cols-3">
@@ -343,7 +365,9 @@ function SetupPage() {
                       className="aspect-[4/5] w-full rounded-lg object-cover"
                     />
                     <p className="mt-3 text-sm font-bold">{t.name}</p>
-                    <p className="text-xs text-muted-foreground">{t.mood}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {TEMPLATE_MOOD_CAPTIONS[t.mood] ?? t.mood}
+                    </p>
                     <ul className="mt-3 space-y-1.5">
                       {t.highlights.map((h) => (
                         <li
@@ -351,7 +375,7 @@ function SetupPage() {
                           className="flex items-start gap-1.5 text-xs text-muted-foreground"
                         >
                           <Check className="mt-0.5 h-3 w-3 shrink-0 text-primary" />
-                          {h}
+                          {TEMPLATE_HIGHLIGHT_CAPTIONS[h] ?? h}
                         </li>
                       ))}
                     </ul>
@@ -364,13 +388,13 @@ function SetupPage() {
           {step === 2 && (
             <div>
               <PanelTitle
-                title="Make it yours"
+                title="Make It Yours"
                 note="Add your logo, choose an accent color and heading font — see it live on the right."
               />
               <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr]">
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="setup-logo">Store logo</Label>
+                    <Label htmlFor="setup-logo">Store Logo</Label>
                     <div className="flex items-center gap-3 rounded-xl border bg-secondary/40 p-3">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-background">
                         {logoUrl ? (
@@ -406,7 +430,7 @@ function SetupPage() {
                     </div>
                   </div>
                   <div>
-                    <Label>Accent color</Label>
+                    <Label>Accent Color</Label>
                     <div className="mt-3 flex flex-wrap gap-2.5">
                       {accents.map((s, i) => (
                         <button
@@ -424,7 +448,7 @@ function SetupPage() {
                     </div>
                   </div>
                   <div>
-                    <Label>Heading font</Label>
+                    <Label>Heading Font</Label>
                     <div className="mt-3 space-y-2">
                       {fonts.map((f, i) => (
                         <button
@@ -440,7 +464,7 @@ function SetupPage() {
                         >
                           <span className="font-semibold">{f.label}</span>
                           <span style={{ fontFamily: f.value }} className="text-muted-foreground">
-                            Handwoven in Accra
+                            Handwoven In Accra
                           </span>
                         </button>
                       ))}
@@ -469,12 +493,12 @@ function SetupPage() {
           {step === 3 && (
             <div>
               <PanelTitle
-                title="Claim your address & plan"
+                title="Claim Your Address & Plan"
                 note="Start on a free Sartorial subdomain — connect a custom domain any time."
               />
               <div className="space-y-6">
                 <div className="space-y-1.5">
-                  <Label htmlFor="domain">Your storefront address</Label>
+                  <Label htmlFor="domain">Your Storefront Address</Label>
                   <div className="flex items-center overflow-hidden rounded-md border">
                     <span className="border-r bg-secondary px-3 py-2.5 text-sm text-muted-foreground">
                       ecommerce.sartorialsmart.com/
@@ -494,7 +518,7 @@ function SetupPage() {
                   </p>
                 </div>
                 <div>
-                  <Label>Choose a plan</Label>
+                  <Label>Choose A Plan</Label>
                   <div className="mt-3 grid gap-3 sm:grid-cols-3">
                     {plansState.map((p) => (
                       <button
@@ -518,7 +542,9 @@ function SetupPage() {
                             <span className="text-xs font-medium text-muted-foreground">/mo</span>
                           )}
                         </p>
-                        <p className="mt-1 text-xs text-muted-foreground">{p.tagline}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {PLAN_TAGLINE_CAPTIONS[p.tagline] ?? p.tagline}
+                        </p>
                       </button>
                     ))}
                   </div>
@@ -545,7 +571,7 @@ function SetupPage() {
               </Button>
             ) : (
               <Button type="button" disabled={launching} onClick={() => void launch()}>
-                <Rocket className="h-4 w-4" /> {launching ? "Launching…" : "Launch my store"}
+                <Rocket className="h-4 w-4" /> {launching ? "Launching…" : "Launch My Store"}
               </Button>
             )}
           </div>

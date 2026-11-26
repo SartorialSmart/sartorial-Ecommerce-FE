@@ -108,7 +108,7 @@ export function ErpLinkCard({ tenantSlug }: { tenantSlug: string | null }) {
     <div className="rounded-xl border bg-card p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="font-display text-lg font-bold">ERP inventory link</h2>
+          <h2 className="font-display text-lg font-bold">ERP Inventory Link</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Link your Sartorial ERP account so products and stock publish into this storefront.
           </p>
@@ -126,7 +126,7 @@ export function ErpLinkCard({ tenantSlug }: { tenantSlug: string | null }) {
       <div className="mt-5 grid gap-5 lg:grid-cols-2">
         <div className="space-y-3">
           <div className="space-y-1.5">
-            <Label htmlFor="erp-business-id">ERP business ID or seller ID</Label>
+            <Label htmlFor="erp-business-id">ERP Business ID Or Seller ID</Label>
             <Input
               id="erp-business-id"
               value={businessId}
@@ -136,11 +136,11 @@ export function ErpLinkCard({ tenantSlug }: { tenantSlug: string | null }) {
           </div>
           <div className="flex flex-wrap gap-2">
             <Button size="sm" disabled={busy} onClick={() => void link()}>
-              <Link2 className="h-4 w-4" /> {status?.linked ? "Update link" : "Link my ERP"}
+              <Link2 className="h-4 w-4" /> {status?.linked ? "Update Link" : "Link My ERP"}
             </Button>
             {status?.linked && (
               <Button variant="outline" size="sm" disabled={busy} onClick={() => void regenerate()}>
-                <RefreshCw className="h-4 w-4" /> New sync key
+                <RefreshCw className="h-4 w-4" /> New Sync Key
               </Button>
             )}
             {status?.linked && (
@@ -160,7 +160,7 @@ export function ErpLinkCard({ tenantSlug }: { tenantSlug: string | null }) {
         <div className="rounded-lg border bg-secondary/40 p-4">
           {rawKey ? (
             <>
-              <p className="text-sm font-semibold text-leaf">Copy this key into your ERP now</p>
+              <p className="text-sm font-semibold text-leaf">Copy This Key Into Your ERP Now</p>
               <p className="mt-1 text-xs text-muted-foreground">
                 For security, the full key is only shown once.
               </p>
@@ -175,7 +175,7 @@ export function ErpLinkCard({ tenantSlug }: { tenantSlug: string | null }) {
             </>
           ) : (
             <>
-              <p className="text-sm font-semibold">Sync endpoints</p>
+              <p className="text-sm font-semibold">Sync Endpoints</p>
               <p className="mt-1 text-xs text-muted-foreground">
                 Your ERP publishes products and stock with the generated service key.
               </p>

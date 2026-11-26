@@ -278,7 +278,7 @@ export function CouponManagementTab({ tenantSlug, refreshKey = 0 }: CouponManage
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-4">
         <div className="rounded-xl border bg-card p-5">
-          <div className="text-sm text-muted-foreground">All coupons</div>
+          <div className="text-sm text-muted-foreground">All Coupons</div>
           <div className="mt-2 font-display text-2xl font-bold">{coupons.length}</div>
         </div>
         <div className="rounded-xl border bg-card p-5">
@@ -290,7 +290,7 @@ export function CouponManagementTab({ tenantSlug, refreshKey = 0 }: CouponManage
           <div className="mt-2 font-display text-2xl font-bold">{exhaustedCount}</div>
         </div>
         <div className="rounded-xl border bg-card p-5">
-          <div className="text-sm text-muted-foreground">Total redemptions</div>
+          <div className="text-sm text-muted-foreground">Total Redemptions</div>
           <div className="mt-2 font-display text-2xl font-bold">{totalUses}</div>
         </div>
       </div>
@@ -305,7 +305,7 @@ export function CouponManagementTab({ tenantSlug, refreshKey = 0 }: CouponManage
           </div>
           <Button onClick={() => openForm(null)}>
             <Plus className="mr-2 h-4 w-4" />
-            New coupon
+            New Coupon
           </Button>
         </div>
 
@@ -430,7 +430,7 @@ export function CouponManagementTab({ tenantSlug, refreshKey = 0 }: CouponManage
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
           <DialogHeader>
-            <DialogTitle>{editing ? `Edit ${editing.code}` : "New coupon"}</DialogTitle>
+            <DialogTitle>{editing ? `Edit ${editing.code}` : "New Coupon"}</DialogTitle>
             <DialogDescription>
               Conditions are checked against the cart before the discount is applied.
             </DialogDescription>
@@ -455,7 +455,7 @@ export function CouponManagementTab({ tenantSlug, refreshKey = 0 }: CouponManage
               />
             </div>
             <div className="space-y-2">
-              <Label>Discount type</Label>
+              <Label>Discount Type</Label>
               <Select
                 value={discountType}
                 onValueChange={(next) => setDiscountType(next as AdminCouponDiscountType)}
@@ -471,7 +471,7 @@ export function CouponManagementTab({ tenantSlug, refreshKey = 0 }: CouponManage
             </div>
             <div className="space-y-2">
               <Label htmlFor="coupon-value">
-                {discountType === "fixed" ? "Amount off" : "Percentage"}
+                {discountType === "fixed" ? "Amount Off" : "Percentage"}
               </Label>
               <Input
                 id="coupon-value"
@@ -483,7 +483,7 @@ export function CouponManagementTab({ tenantSlug, refreshKey = 0 }: CouponManage
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="coupon-min-spend">Minimum spend</Label>
+              <Label htmlFor="coupon-min-spend">Minimum Spend</Label>
               <Input
                 id="coupon-min-spend"
                 type="number"
@@ -510,7 +510,7 @@ export function CouponManagementTab({ tenantSlug, refreshKey = 0 }: CouponManage
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="coupon-valid-from">Valid from</Label>
+              <Label htmlFor="coupon-valid-from">Valid From</Label>
               <Input
                 id="coupon-valid-from"
                 type="datetime-local"
@@ -519,7 +519,7 @@ export function CouponManagementTab({ tenantSlug, refreshKey = 0 }: CouponManage
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="coupon-valid-until">Valid until</Label>
+              <Label htmlFor="coupon-valid-until">Valid Until</Label>
               <Input
                 id="coupon-valid-until"
                 type="datetime-local"
@@ -528,7 +528,7 @@ export function CouponManagementTab({ tenantSlug, refreshKey = 0 }: CouponManage
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="coupon-max-uses">Maximum uses</Label>
+              <Label htmlFor="coupon-max-uses">Maximum Uses</Label>
               <Input
                 id="coupon-max-uses"
                 type="number"
@@ -548,7 +548,7 @@ export function CouponManagementTab({ tenantSlug, refreshKey = 0 }: CouponManage
             </div>
             <div className="flex items-center justify-between rounded-lg border p-3 md:col-span-2">
               <div>
-                <Label>First order only</Label>
+                <Label>First Order Only</Label>
                 <p className="text-xs text-muted-foreground">Restrict to new customers.</p>
               </div>
               <Switch checked={firstOrderOnly} onCheckedChange={setFirstOrderOnly} />
@@ -566,7 +566,7 @@ export function CouponManagementTab({ tenantSlug, refreshKey = 0 }: CouponManage
               </Button>
               <Button type="submit" disabled={saving}>
                 {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {editing ? "Save changes" : "Create coupon"}
+                {editing ? "Save Changes" : "Create Coupon"}
               </Button>
             </DialogFooter>
           </form>

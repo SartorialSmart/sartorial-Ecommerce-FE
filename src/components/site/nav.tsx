@@ -50,7 +50,7 @@ export function SiteNav() {
               onClick={() => void handleSignOut()}
               className="text-sm font-medium text-ink-foreground/75 transition-colors hover:text-ink-foreground"
             >
-              Sign out
+              Sign Out
             </button>
           ) : (
             <>
@@ -58,10 +58,10 @@ export function SiteNav() {
                 to="/login"
                 className="text-sm font-medium text-ink-foreground/75 transition-colors hover:text-ink-foreground"
               >
-                Sign in
+                Sign In
               </Link>
               <Button asChild>
-                <Link to="/signup">Open your store</Link>
+                <Link to="/signup">Open Your Store</Link>
               </Button>
             </>
           )}
@@ -97,7 +97,7 @@ export function SiteNav() {
                 onClick={() => void handleSignOut()}
                 className="text-left text-sm font-medium text-ink-foreground/75"
               >
-                Sign out
+                Sign Out
               </button>
             ) : (
               <>
@@ -106,10 +106,10 @@ export function SiteNav() {
                   onClick={() => setOpen(false)}
                   className="text-sm font-medium text-ink-foreground/75"
                 >
-                  Sign in
+                  Sign In
                 </Link>
                 <Button asChild onClick={() => setOpen(false)}>
-                  <Link to="/signup">Open your store</Link>
+                  <Link to="/signup">Open Your Store</Link>
                 </Button>
               </>
             )}

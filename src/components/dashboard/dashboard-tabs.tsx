@@ -233,27 +233,27 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
   return (
     <div className="grid gap-6 lg:grid-cols-5">
       <Panel
-        title="Store profile"
+        title="Store Profile"
         note="What customers see on your storefront and invoices."
         className="lg:col-span-3"
       >
         <div className="mb-5 flex flex-wrap items-center gap-3 rounded-xl border bg-secondary/40 p-3">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-background">
             {logoUrl ? (
-              <img src={logoUrl} alt="Store logo" className="h-full w-full object-contain" />
+              <img src={logoUrl} alt="Store Logo" className="h-full w-full object-contain" />
             ) : (
               <span className="text-xs font-bold text-muted-foreground">LOGO</span>
             )}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold">Store logo</p>
+            <p className="text-sm font-semibold">Store Logo</p>
             <p className="text-xs text-muted-foreground">
               Used on your storefront and in generated invoices.
             </p>
           </div>
           <Button asChild variant="outline" size="sm" disabled={logoUploading}>
             <label htmlFor="profile-logo" className="cursor-pointer">
-              <Upload className="h-4 w-4" /> {logoUploading ? "Uploading…" : "Replace logo"}
+              <Upload className="h-4 w-4" /> {logoUploading ? "Uploading…" : "Replace Logo"}
             </label>
           </Button>
           <input
@@ -266,7 +266,7 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <Label htmlFor="profile-store">Store name</Label>
+            <Label htmlFor="profile-store">Store Name</Label>
             <Input
               id="profile-store"
               placeholder="Your store name"
@@ -275,7 +275,7 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="profile-tagline">Hero tagline</Label>
+            <Label htmlFor="profile-tagline">Hero Tagline</Label>
             <Input
               id="profile-tagline"
               placeholder="Short tagline for your storefront"
@@ -284,7 +284,7 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
             />
           </div>
           <div className="space-y-1.5">
-            <Label>City &amp; country</Label>
+            <Label>City &amp; Country</Label>
             <Select value={city} onValueChange={setCity}>
               <SelectTrigger>
                 <SelectValue placeholder="Select location" />
@@ -314,7 +314,7 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
             </Select>
           </div>
           <div className="space-y-1.5 sm:col-span-2">
-            <Label htmlFor="profile-domain">Storefront address</Label>
+            <Label htmlFor="profile-domain">Storefront Address</Label>
             <Input
               id="profile-domain"
               value={domain}
@@ -325,7 +325,7 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
           </div>
         </div>
         <Button className="mt-6" disabled={!loaded || saving} onClick={() => void saveProfile()}>
-          {saving ? "Saving…" : "Save changes"}
+          {saving ? "Saving…" : "Save Changes"}
         </Button>
       </Panel>
 
@@ -344,7 +344,7 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
           </p>
         </Panel>
 
-        <Panel title="Payment methods" note="How customers pay you at checkout.">
+        <Panel title="Payment Methods" note="How customers pay you at checkout.">
           <div className="space-y-4">
             {PAYMENT_PROVIDERS.map((p) => (
               <div key={p.key} className="flex items-center justify-between">
@@ -367,7 +367,7 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
         <Panel title="Shipping" note="Flat-rate shipping shown at checkout.">
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="shipping-flat">Flat rate ({currency})</Label>
+              <Label htmlFor="shipping-flat">Flat Rate ({currency})</Label>
               <Input
                 id="shipping-flat"
                 type="number"
@@ -378,7 +378,7 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="shipping-free">Free shipping over ({currency})</Label>
+              <Label htmlFor="shipping-free">Free Shipping Over ({currency})</Label>
               <Input
                 id="shipping-free"
                 type="number"
@@ -394,7 +394,7 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
           </div>
         </Panel>
 
-        <Panel title="VAT charges" note="Added to order totals, invoices, and sales reports.">
+        <Panel title="VAT Charges" note="Added to order totals, invoices, and sales reports.">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm">Charge VAT</span>
@@ -403,7 +403,7 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
             {vatEnabled && (
               <div className="space-y-4">
                 <div className="space-y-1.5">
-                  <Label htmlFor="vat-type">VAT type</Label>
+                  <Label htmlFor="vat-type">VAT Type</Label>
                   <Select
                     value={vatType}
                     onValueChange={(value) => setVatType(value === "flat" ? "flat" : "percentage")}
@@ -419,7 +419,7 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
                 </div>
                 {vatType === "percentage" ? (
                   <div className="space-y-1.5">
-                    <Label htmlFor="vat-percent">VAT percentage (%)</Label>
+                    <Label htmlFor="vat-percent">VAT Percentage (%)</Label>
                     <Input
                       id="vat-percent"
                       type="number"
@@ -432,7 +432,7 @@ export function StoreSettingsTab({ tenantSlug }: { tenantSlug: string | null }) 
                   </div>
                 ) : (
                   <div className="space-y-1.5">
-                    <Label htmlFor="vat-flat">VAT flat fee ({currency})</Label>
+                    <Label htmlFor="vat-flat">VAT Flat Fee ({currency})</Label>
                     <Input
                       id="vat-flat"
                       type="number"
@@ -508,7 +508,7 @@ export function PlanBillingTab({ tenantSlug }: { tenantSlug: string | null }) {
     <div className="space-y-6">
       <div className="grid gap-6 lg:grid-cols-3">
         <Panel
-          title="Current plan"
+          title="Current Plan"
           note="Your storefront runs on this plan today."
           className="lg:col-span-2"
         >
@@ -545,13 +545,13 @@ export function PlanBillingTab({ tenantSlug }: { tenantSlug: string | null }) {
                     : "text-muted-foreground hover:text-foreground")
                 }
               >
-                {c === "annual" ? "Annual · save 20%" : "Monthly"}
+                {c === "annual" ? "Annual · Save 20%" : "Monthly"}
               </button>
             ))}
           </div>
         </Panel>
 
-        <Panel title="Payment method">
+        <Panel title="Payment Method">
           <div className="rounded-lg border bg-secondary/50 px-4 py-3 text-sm text-muted-foreground">
             No payment method on file yet.
           </div>
@@ -559,7 +559,7 @@ export function PlanBillingTab({ tenantSlug }: { tenantSlug: string | null }) {
       </div>
 
       <Panel
-        title="Change plan"
+        title="Change Plan"
         note="Upgrade or downgrade any time — we prorate to the day."
         className="p-0"
       >
@@ -595,7 +595,7 @@ export function PlanBillingTab({ tenantSlug }: { tenantSlug: string | null }) {
                   disabled={isCurrent || switching || !planReady}
                   onClick={() => void switchPlan(p)}
                 >
-                  {isCurrent ? "Current plan" : `Switch to ${p.name}`}
+                  {isCurrent ? "Current Plan" : `Switch To ${p.name}`}
                 </Button>
               </div>
             );
@@ -682,7 +682,7 @@ export function TeamTab({ tenantSlug }: { tenantSlug: string | null }) {
   return (
     <div className="grid gap-6 lg:grid-cols-3">
       <Panel
-        title="Your team"
+        title="Your Team"
         note="People with access to this store's dashboard."
         className="p-0 lg:col-span-2"
       >
@@ -737,10 +737,10 @@ export function TeamTab({ tenantSlug }: { tenantSlug: string | null }) {
       </Panel>
 
       <div className="space-y-6">
-        <Panel title="Add a teammate">
+        <Panel title="Add A Teammate">
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="invite-email">Email address</Label>
+              <Label htmlFor="invite-email">Email Address</Label>
               <Input
                 id="invite-email"
                 type="email"
@@ -763,14 +763,14 @@ export function TeamTab({ tenantSlug }: { tenantSlug: string | null }) {
               </Select>
             </div>
             <Button className="w-full" disabled={inviting} onClick={() => void sendInvite()}>
-              {inviting ? "Adding…" : "Add to team"}
+              {inviting ? "Adding…" : "Add To Team"}
             </Button>
             <p className="text-xs text-muted-foreground">
               They need an existing Sartorial account — we add them right away.
             </p>
           </div>
         </Panel>
-        <Panel title="What each role can do">
+        <Panel title="What Each Role Can Do">
           <ul className="space-y-3 text-sm">
             <li>
               <span className="font-semibold">Owner</span> — everything, including billing and

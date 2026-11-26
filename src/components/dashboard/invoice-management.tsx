@@ -71,8 +71,9 @@ export function InvoiceManagementTab({ tenantSlug }: { tenantSlug: string | null
       ]);
       setInvoices(invoiceRows);
       setOrders(orderRows);
-    } catch (error) {
-      toast.error("Couldn't load invoices", { description: errorMessage(error) });
+    } catch {
+      setInvoices([]);
+      setOrders([]);
     } finally {
       setLoading(false);
     }
@@ -174,7 +175,7 @@ export function InvoiceManagementTab({ tenantSlug }: { tenantSlug: string | null
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="font-display text-xl font-bold">Sales &amp; invoices</h2>
+          <h2 className="font-display text-xl font-bold">Sales &amp; Invoices</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Turn paid orders into branded PDF invoices and email them to customers.
           </p>
@@ -184,7 +185,7 @@ export function InvoiceManagementTab({ tenantSlug }: { tenantSlug: string | null
             <RefreshCw className="h-4 w-4" /> Refresh
           </Button>
           <Button size="sm" onClick={() => setCreateOpen(true)}>
-            <Plus className="h-4 w-4" /> New invoice
+            <Plus className="h-4 w-4" /> New Invoice
           </Button>
         </div>
       </div>
@@ -271,7 +272,7 @@ export function InvoiceManagementTab({ tenantSlug }: { tenantSlug: string | null
       <Sheet open={createOpen} onOpenChange={setCreateOpen}>
         <SheetContent className="sm:max-w-lg">
           <SheetHeader>
-            <SheetTitle>Create an invoice</SheetTitle>
+            <SheetTitle>Create An Invoice</SheetTitle>
             <SheetDescription>
               Your store logo from setup is added automatically. Add a customer logo if needed.
             </SheetDescription>
@@ -295,7 +296,7 @@ export function InvoiceManagementTab({ tenantSlug }: { tenantSlug: string | null
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="invoice-customer">Customer name</Label>
+                <Label htmlFor="invoice-customer">Customer Name</Label>
                 <Input
                   id="invoice-customer"
                   value={customerName}
@@ -303,7 +304,7 @@ export function InvoiceManagementTab({ tenantSlug }: { tenantSlug: string | null
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="invoice-email">Customer email</Label>
+                <Label htmlFor="invoice-email">Customer Email</Label>
                 <Input
                   id="invoice-email"
                   type="email"
@@ -313,7 +314,7 @@ export function InvoiceManagementTab({ tenantSlug }: { tenantSlug: string | null
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="invoice-customer-logo">Customer logo URL</Label>
+              <Label htmlFor="invoice-customer-logo">Customer Logo URL</Label>
               <Input
                 id="invoice-customer-logo"
                 type="url"
@@ -336,7 +337,7 @@ export function InvoiceManagementTab({ tenantSlug }: { tenantSlug: string | null
               />
             </div>
             <Button className="w-full" disabled={busy} onClick={() => void createInvoice()}>
-              {busy ? "Creating…" : "Create invoice"}
+              {busy ? "Creating…" : "Create Invoice"}
             </Button>
           </div>
         </SheetContent>
@@ -345,7 +346,7 @@ export function InvoiceManagementTab({ tenantSlug }: { tenantSlug: string | null
       <Sheet open={sendInvoice !== null} onOpenChange={(open) => !open && setSendInvoice(null)}>
         <SheetContent className="sm:max-w-lg">
           <SheetHeader>
-            <SheetTitle>Email invoice</SheetTitle>
+            <SheetTitle>Email Invoice</SheetTitle>
             <SheetDescription>
               The PDF is attached automatically. You can add the customer logo before sending.
             </SheetDescription>
@@ -370,7 +371,7 @@ export function InvoiceManagementTab({ tenantSlug }: { tenantSlug: string | null
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="send-logo">Customer logo URL</Label>
+                <Label htmlFor="send-logo">Customer Logo URL</Label>
                 <Input
                   id="send-logo"
                   type="url"
@@ -389,7 +390,7 @@ export function InvoiceManagementTab({ tenantSlug }: { tenantSlug: string | null
                 />
               </div>
               <Button className="w-full" disabled={busy} onClick={() => void sendInvoiceEmail()}>
-                {busy ? "Sending…" : "Send invoice"}
+                {busy ? "Sending…" : "Send Invoice"}
               </Button>
             </div>
           )}

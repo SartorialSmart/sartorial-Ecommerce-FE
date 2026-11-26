@@ -220,7 +220,7 @@ const DEFAULT_PLANS: Plan[] = [
     tagline: "Start threading your first sale.",
     monthly: 0,
     annual: 0,
-    cta: "Start free",
+    cta: "Start Free",
     features: [
       "Free sartorial.store subdomain",
       "Up to 20 products",

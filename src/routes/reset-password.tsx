@@ -72,7 +72,7 @@ function ResetPasswordPage() {
 
   return (
     <AuthShell
-      title="Set a new password"
+      title="Set A New Password"
       subtitle="Choose a strong password you haven't used elsewhere."
       footer={
         <>
@@ -92,7 +92,7 @@ function ResetPasswordPage() {
           </p>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="new-password">New password</Label>
+          <Label htmlFor="new-password">New Password</Label>
           <div className="relative">
             <Input
               id="new-password"
@@ -116,7 +116,7 @@ function ResetPasswordPage() {
           </div>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="confirm-password">Confirm new password</Label>
+          <Label htmlFor="confirm-password">Confirm New Password</Label>
           <Input
             id="confirm-password"
             type={show ? "text" : "password"}
@@ -129,7 +129,7 @@ function ResetPasswordPage() {
           />
         </div>
         <Button type="submit" className="w-full" disabled={submitting}>
-          {submitting ? "Saving…" : "Save new password"}
+          {submitting ? "Saving…" : "Save New Password"}
         </Button>
       </form>
     </AuthShell>

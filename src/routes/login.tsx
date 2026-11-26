@@ -62,7 +62,7 @@ function LoginPage() {
 
   return (
     <AuthShell
-      title="Welcome back"
+      title="Welcome Back"
       subtitle="Sign in to your Sartorial storefront dashboard."
       footer={
         <>
@@ -118,14 +118,14 @@ function LoginPage() {
         </div>
         <label className="flex items-center gap-2 text-sm text-muted-foreground">
           <Checkbox id="remember" defaultChecked />
-          Keep me signed in for 30 days
+          Keep Me Signed In For 30 Days
         </label>
         <Button type="submit" className="w-full" disabled={submitting}>
           {submitting ? (
-            "Signing in…"
+            "Signing In…"
           ) : (
             <>
-              Sign in <ArrowRight className="h-4 w-4" />
+              Sign In <ArrowRight className="h-4 w-4" />
             </>
           )}
         </Button>

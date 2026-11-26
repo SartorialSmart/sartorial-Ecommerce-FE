@@ -151,7 +151,7 @@ export function AddProductDialog({
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 font-display">
-            <PackagePlus className="h-5 w-5 text-primary" /> Add product
+            <PackagePlus className="h-5 w-5 text-primary" /> Add Product
           </DialogTitle>
           <DialogDescription>
             Create a simple, ready-to-sell product in your store. Variants and options can be added
@@ -202,7 +202,7 @@ export function AddProductDialog({
             )}
 
             <div className="space-y-1.5">
-              <Label htmlFor="ap-title">Product title</Label>
+              <Label htmlFor="ap-title">Product Title</Label>
               <Input
                 id="ap-title"
                 required
@@ -254,7 +254,7 @@ export function AddProductDialog({
             </div>
             {categoryId === NEW_CATEGORY && (
               <div className="space-y-1.5">
-                <Label htmlFor="ap-new-category">New category</Label>
+                <Label htmlFor="ap-new-category">New Category</Label>
                 <Input
                   id="ap-new-category"
                   placeholder="Okafor prints"
@@ -280,7 +280,7 @@ export function AddProductDialog({
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="ap-stock">Stock on hand</Label>
+                <Label htmlFor="ap-stock">Stock On Hand</Label>
                 <Input
                   id="ap-stock"
                   required
@@ -304,7 +304,7 @@ export function AddProductDialog({
                     <Loader2 className="h-4 w-4 animate-spin" /> Creating…
                   </>
                 ) : (
-                  "Create product"
+                  "Create Product"
                 )}
               </Button>
             </DialogFooter>

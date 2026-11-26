@@ -482,7 +482,7 @@ function OrdersPage() {
                     disabled={loading}
                     onClick={() => setPage((current) => current + 1)}
                   >
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Load more
+                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Load More
                   </Button>
                 )}
               </div>
@@ -694,10 +694,10 @@ function OrdersPage() {
               )}
 
               <div className="mt-6 space-y-4 border-t pt-6">
-                <h3 className="font-display text-sm font-bold">Manage order</h3>
+                <h3 className="font-display text-sm font-bold">Manage Order</h3>
                 {(NEXT_STATUSES[selected.status] ?? []).length > 0 && (
                   <div className="space-y-1.5">
-                    <Label>Move to status</Label>
+                    <Label>Move To Status</Label>
                     <Select
                       value=""
                       disabled={busy}
@@ -731,7 +731,7 @@ function OrdersPage() {
                       size="sm"
                       onClick={() => setShipFormOpen((open) => !open)}
                     >
-                      <Truck className="h-4 w-4" /> Mark as shipped
+                      <Truck className="h-4 w-4" /> Mark As Shipped
                     </Button>
                     {shipFormOpen && (
                       <div className="space-y-3">
@@ -745,7 +745,7 @@ function OrdersPage() {
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <Label htmlFor="order-tracking">Tracking number</Label>
+                          <Label htmlFor="order-tracking">Tracking Number</Label>
                           <Input
                             id="order-tracking"
                             value={trackingNumber}
@@ -767,7 +767,7 @@ function OrdersPage() {
                             )
                           }
                         >
-                          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Save shipment
+                          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Save Shipment
                         </Button>
                       </div>
                     )}
@@ -776,7 +776,7 @@ function OrdersPage() {
 
                 {(NEXT_STATUSES[selected.status] ?? []).includes("refunded") && (
                   <Button variant="destructive" size="sm" onClick={() => setRefundOpen(true)}>
-                    <RotateCcw className="h-4 w-4" /> Refund order
+                    <RotateCcw className="h-4 w-4" /> Refund Order
                   </Button>
                 )}
               </div>
@@ -801,7 +801,7 @@ function OrdersPage() {
               disabled={busy || !selected || !storeSlug}
               onClick={() => void handleRefund()}
             >
-              {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Refund order
+              {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Refund Order
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

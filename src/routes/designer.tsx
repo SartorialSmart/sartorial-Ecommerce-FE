@@ -181,7 +181,7 @@ function DesignerPage() {
           <div className="flex items-center gap-4">
             <Logo />
             <span className="hidden text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted sm:block">
-              Store designer · {storeName}
+              Store Designer · {storeName}
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -202,7 +202,7 @@ function DesignerPage() {
 
       <div className="grid lg:grid-cols-[300px_1fr]">
         <aside className="space-y-8 border-b p-5 lg:sticky lg:top-14 lg:h-[calc(100vh-3.5rem)] lg:overflow-y-auto lg:border-b-0 lg:border-r no-scrollbar">
-          <Panel title="Default design">
+          <Panel title="Default Design">
             {templates.map((t) => (
               <button
                 key={t.slug}
@@ -224,7 +224,11 @@ function DesignerPage() {
                 />
                 <span>
                   <span className="block text-sm font-semibold">{t.name}</span>
-                  <span className="block text-xs text-muted-foreground">{t.mood}</span>
+                  <span className="block text-xs text-muted-foreground">
+                    {t.mood === "Cool · Minimal · Living dye"
+                      ? "Cool · Minimal · Living Dye"
+                      : t.mood}
+                  </span>
                 </span>
               </button>
             ))}
@@ -232,7 +236,7 @@ function DesignerPage() {
 
           <Panel title="Brand">
             <div className="space-y-1.5">
-              <Label htmlFor="store-name">Store name</Label>
+              <Label htmlFor="store-name">Store Name</Label>
               <Input
                 id="store-name"
                 placeholder="Your store name"
@@ -242,7 +246,7 @@ function DesignerPage() {
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="store-tagline">Hero tagline</Label>
+              <Label htmlFor="store-tagline">Hero Tagline</Label>
               <Input
                 id="store-tagline"
                 value={tagline}
@@ -252,7 +256,7 @@ function DesignerPage() {
             </div>
           </Panel>
 
-          <Panel title="Accent color">
+          <Panel title="Accent Color">
             <div className="flex flex-wrap gap-2.5">
               {swatches.map((s) => (
                 <button
@@ -283,13 +287,13 @@ function DesignerPage() {
               >
                 <span className="font-semibold">{f.label}</span>
                 <span style={{ fontFamily: f.value }} className="text-muted-foreground">
-                  Handwoven in Accra
+                  Handwoven In Accra
                 </span>
               </button>
             ))}
           </Panel>
 
-          <Panel title="Hero layout">
+          <Panel title="Hero Layout">
             <div className="grid grid-cols-2 gap-2">
               {(["split", "overlay"] as const).map((l) => (
                 <button
@@ -302,7 +306,7 @@ function DesignerPage() {
                       : "border-input bg-background hover:bg-secondary")
                   }
                 >
-                  {l}
+                  {l === "split" ? "Split" : "Overlay"}
                 </button>
               ))}
             </div>
@@ -311,10 +315,10 @@ function DesignerPage() {
           <Panel title="Sections">
             {(
               [
-                ["Announcement bar", showAnnouncement, setShowAnnouncement],
-                ["Textile marquee", showMarquee, setShowMarquee],
-                ["Customer love note", showTestimonial, setShowTestimonial],
-                ["Mailing-list banner", showCta, setShowCta],
+                ["Announcement Bar", showAnnouncement, setShowAnnouncement],
+                ["Textile Marquee", showMarquee, setShowMarquee],
+                ["Customer Love Note", showTestimonial, setShowTestimonial],
+                ["Mailing-List Banner", showCta, setShowCta],
               ] as const
             ).map(([label, value, set]) => (
               <div key={label} className="flex items-center justify-between">

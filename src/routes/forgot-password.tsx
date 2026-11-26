@@ -53,7 +53,7 @@ function ForgotPasswordPage() {
 
   return (
     <AuthShell
-      title="Reset your password"
+      title="Reset Your Password"
       subtitle="We'll email you a secure link to set a new password."
       footer={
         <>
@@ -70,7 +70,7 @@ function ForgotPasswordPage() {
             <MailCheck className="h-6 w-6" />
           </span>
           <div>
-            <p className="font-display text-lg font-bold">Check your inbox</p>
+            <p className="font-display text-lg font-bold">Check Your Inbox</p>
             <p className="mt-2 text-sm text-muted-foreground">
               We sent a password reset link to{" "}
               <span className="font-semibold text-foreground">{email}</span>. It expires in 60
@@ -78,7 +78,7 @@ function ForgotPasswordPage() {
             </p>
           </div>
           <Button variant="outline" className="w-full" onClick={() => setSent(false)}>
-            Use a different email
+            Use A Different Email
           </Button>
         </div>
       ) : (
@@ -98,7 +98,7 @@ function ForgotPasswordPage() {
               "Sending…"
             ) : (
               <>
-                Send reset link <ArrowRight className="h-4 w-4" />
+                Send Reset Link <ArrowRight className="h-4 w-4" />
               </>
             )}
           </Button>

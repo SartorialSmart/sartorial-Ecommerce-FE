@@ -126,7 +126,7 @@ function Hero() {
           <div className="mt-8 flex flex-wrap gap-4">
             <Button asChild size="lg" className="h-12 px-7 text-base">
               <Link to="/signup">
-                Open your store — free <ArrowRight className="h-4 w-4" />
+                Open Your Store — Free <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button
@@ -135,7 +135,7 @@ function Hero() {
               variant="outline"
               className="h-12 border-ink-line bg-transparent px-7 text-base text-ink-foreground hover:bg-ink-line hover:text-ink-foreground"
             >
-              <Link to="/templates">Browse storefront designs</Link>
+              <Link to="/templates">Browse Storefront Designs</Link>
             </Button>
           </div>
           <dl className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-ink-line pt-8">
@@ -317,7 +317,7 @@ function DesignerTeaser() {
           </ul>
           <Button asChild size="lg" className="mt-10 h-12 px-7 text-base">
             <Link to="/designer" search={{ template: undefined }}>
-              Open the store designer <Palette className="h-4 w-4" />
+              Open The Store Designer <Palette className="h-4 w-4" />
             </Link>
           </Button>
         </div>
@@ -415,7 +415,7 @@ function Plans() {
                     : "text-ink-muted hover:text-ink-foreground")
                 }
               >
-                {b === "annual" ? "Annual · save 20%" : "Monthly"}
+                {b === "annual" ? "Annual · Save 20%" : "Monthly"}
               </button>
             ))}
           </div>
@@ -523,7 +523,7 @@ function FinalCta() {
           className="mt-8 h-12 bg-ink px-8 text-base text-ink-foreground hover:bg-ink-deep"
         >
           <Link to="/signup">
-            Open your store <ArrowRight className="h-4 w-4" />
+            Open Your Store <ArrowRight className="h-4 w-4" />
           </Link>
         </Button>
       </div>

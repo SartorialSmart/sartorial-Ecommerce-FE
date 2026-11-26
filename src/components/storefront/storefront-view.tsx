@@ -128,7 +128,7 @@ export function StorefrontView({
               className="mt-6 inline-flex items-center gap-2 rounded-md px-6 py-3 text-sm font-semibold"
               style={{ background: accent, color: accentFg }}
             >
-              Shop the collection <ArrowRight className="h-4 w-4" />
+              Shop The Collection <ArrowRight className="h-4 w-4" />
             </button>
           </div>
         </section>
@@ -156,13 +156,13 @@ export function StorefrontView({
                 className="inline-flex items-center gap-2 rounded-md px-6 py-3 text-sm font-semibold"
                 style={{ background: accent, color: accentFg }}
               >
-                Shop new arrivals <ArrowRight className="h-4 w-4" />
+                Shop New Arrivals <ArrowRight className="h-4 w-4" />
               </button>
               <button
                 className="rounded-md px-6 py-3 text-sm font-semibold"
                 style={{ border: `1px solid ${t.border}` }}
               >
-                Book a fitting
+                Book A Fitting
               </button>
             </div>
           </div>
@@ -203,7 +203,7 @@ export function StorefrontView({
             className="hidden text-sm font-semibold underline underline-offset-4 sm:block"
             style={{ color: accent }}
           >
-            View all
+            View All
           </span>
         </div>
         <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">

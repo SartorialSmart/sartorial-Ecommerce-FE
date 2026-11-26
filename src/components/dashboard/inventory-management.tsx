@@ -186,7 +186,7 @@ export function InventoryManagementTab({
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-xl border bg-card p-5">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Tracked variants
+            Tracked Variants
           </p>
           <p className="mt-2 flex items-center gap-2 text-2xl font-bold">
             <Boxes className="h-5 w-5 text-primary" /> {rows.length}
@@ -194,7 +194,7 @@ export function InventoryManagementTab({
         </div>
         <div className="rounded-xl border bg-card p-5">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Low stock
+            Low Stock
           </p>
           <p className="mt-2 flex items-center gap-2 text-2xl font-bold text-destructive">
             <AlertTriangle className="h-5 w-5" /> {lowStockCount}
@@ -203,7 +203,7 @@ export function InventoryManagementTab({
         </div>
         <div className="rounded-xl border bg-card p-5">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Sold out
+            Sold Out
           </p>
           <p className="mt-2 flex items-center gap-2 text-2xl font-bold text-leaf">
             <PackageCheck className="h-5 w-5" /> {outOfStockCount}
@@ -226,7 +226,7 @@ export function InventoryManagementTab({
           size="sm"
           onClick={() => setLowStockOnly((current) => !current)}
         >
-          <AlertTriangle className="h-4 w-4" /> Low stock only
+          <AlertTriangle className="h-4 w-4" /> Low Stock Only
         </Button>
       </div>
 
@@ -237,7 +237,7 @@ export function InventoryManagementTab({
               <TableHead>Product</TableHead>
               <TableHead>SKU</TableHead>
               <TableHead>Options</TableHead>
-              <TableHead className="text-right">On hand</TableHead>
+              <TableHead className="text-right">On Hand</TableHead>
               <TableHead className="text-right">Reserved</TableHead>
               <TableHead className="text-right">Available</TableHead>
               <TableHead className="text-right">Action</TableHead>
@@ -299,14 +299,14 @@ export function InventoryManagementTab({
       <Dialog open={editTarget !== null} onOpenChange={(open) => !open && setEditTarget(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Update stock</DialogTitle>
+            <DialogTitle>Update Stock</DialogTitle>
             <DialogDescription>
               {editTarget?.productTitle} · {editTarget?.variant.sku}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="stock-quantity">On-hand quantity</Label>
+              <Label htmlFor="stock-quantity">On-Hand Quantity</Label>
               <Input
                 id="stock-quantity"
                 type="number"
@@ -317,7 +317,7 @@ export function InventoryManagementTab({
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="stock-warehouse">Warehouse code (optional)</Label>
+              <Label htmlFor="stock-warehouse">Warehouse Code (Optional)</Label>
               <Input
                 id="stock-warehouse"
                 placeholder="main"
@@ -331,7 +331,7 @@ export function InventoryManagementTab({
               Cancel
             </Button>
             <Button onClick={() => void saveStock()} disabled={saving}>
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Save stock
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Save Stock
             </Button>
           </DialogFooter>
         </DialogContent>

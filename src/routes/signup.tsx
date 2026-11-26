@@ -68,13 +68,13 @@ function SignupPage() {
 
   return (
     <AuthShell
-      title="Create your store"
+      title="Create Your Store"
       subtitle="Free forever plan · No card needed · Your store live in 2 minutes."
       footer={
         <>
           Already selling with us?{" "}
           <Link to="/login" className="font-semibold text-primary hover:underline">
-            Sign in
+            Sign In
           </Link>
         </>
       }
@@ -82,7 +82,7 @@ function SignupPage() {
       <form className="space-y-5" onSubmit={handleSubmit}>
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <Label htmlFor="name">Your name</Label>
+            <Label htmlFor="name">Your Name</Label>
             <Input
               id="name"
               required
@@ -93,7 +93,7 @@ function SignupPage() {
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="store">Store name</Label>
+            <Label htmlFor="store">Store Name</Label>
             <Input
               id="store"
               required
@@ -138,10 +138,10 @@ function SignupPage() {
         </p>
         <Button type="submit" className="w-full" disabled={submitting}>
           {submitting ? (
-            "Creating your store…"
+            "Creating Your Store…"
           ) : (
             <>
-              Create my store <ArrowRight className="h-4 w-4" />
+              Create My Store <ArrowRight className="h-4 w-4" />
             </>
           )}
         </Button>

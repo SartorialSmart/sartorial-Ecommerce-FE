@@ -51,12 +51,12 @@ function TemplatePreviewPage() {
               className="border-ink-line bg-transparent text-ink-foreground hover:bg-ink-line hover:text-ink-foreground"
             >
               <Link to="/templates">
-                <ArrowLeft className="h-4 w-4" /> All designs
+                <ArrowLeft className="h-4 w-4" /> All Designs
               </Link>
             </Button>
             <Button asChild size="sm">
               <Link to="/designer" search={{ template: template.slug }}>
-                <Rocket className="h-4 w-4" /> Use this design
+                <Rocket className="h-4 w-4" /> Use This Design
               </Link>
             </Button>
           </div>

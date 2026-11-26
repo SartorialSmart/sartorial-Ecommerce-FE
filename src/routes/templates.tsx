@@ -86,7 +86,7 @@ function TemplatesPage() {
                   </Button>
                   <Button asChild className="flex-1">
                     <Link to="/designer" search={{ template: t.slug }}>
-                      Use design <ArrowRight className="h-4 w-4" />
+                      Use Design <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
                 </div>

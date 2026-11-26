@@ -8,7 +8,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,10 +39,6 @@ function shiftedDate(days: number): string {
   const date = new Date();
   date.setDate(date.getDate() + days);
   return isoDate(date);
-}
-
-function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : "The request failed.";
 }
 
 function Metric({ label, value }: { label: string; value: string }) {
@@ -78,9 +73,8 @@ export function SalesReportingTab({ tenantSlug }: { tenantSlug: string | null })
       .then((data) => {
         if (!cancelled) setReport(data);
       })
-      .catch((error: unknown) => {
-        if (!cancelled)
-          toast.error("Couldn't load sales report", { description: errorMessage(error) });
+      .catch(() => {
+        if (!cancelled) setReport(null);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -101,7 +95,7 @@ export function SalesReportingTab({ tenantSlug }: { tenantSlug: string | null })
     <div className="space-y-6">
       <div className="flex flex-col gap-4 rounded-xl border bg-card p-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="font-display text-lg font-bold">Sales reporting</h2>
+          <h2 className="font-display text-lg font-bold">Sales Reporting</h2>
           <p className="text-sm text-muted-foreground">
             {loading
               ? "Loading report…"
@@ -128,7 +122,7 @@ export function SalesReportingTab({ tenantSlug }: { tenantSlug: string | null })
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="report-status">Order status</Label>
+            <Label htmlFor="report-status">Order Status</Label>
             <Select value={status} onValueChange={setStatus}>
               <SelectTrigger id="report-status" className="w-44">
                 <SelectValue placeholder="All statuses" />
@@ -145,20 +139,33 @@ export function SalesReportingTab({ tenantSlug }: { tenantSlug: string | null })
         </div>
       </div>
 
+      {!report && !loading && (
+        <Card>
+          <CardHeader>
+            <CardTitle>No Sales Yet</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Your sales report will appear once your store has orders.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
       {report && (
         <>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <Metric label="Revenue (paid)" value={money(report.summary.revenue)} />
-            <Metric label="Net sales" value={money(report.summary.net)} />
-            <Metric label="VAT collected" value={money(report.summary.vat)} />
+            <Metric label="Revenue (Paid)" value={money(report.summary.revenue)} />
+            <Metric label="Net Sales" value={money(report.summary.net)} />
+            <Metric label="VAT Collected" value={money(report.summary.vat)} />
             <Metric label="Discounts" value={money(report.summary.discounts)} />
             <Metric label="Refunds" value={money(report.summary.refunds)} />
-            <Metric label="Paid orders" value={String(report.summary.paid_orders)} />
+            <Metric label="Paid Orders" value={String(report.summary.paid_orders)} />
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>Daily net sales</CardTitle>
+              <CardTitle>Daily Net Sales</CardTitle>
             </CardHeader>
             <CardContent className="h-64">
               {mounted ? (
@@ -197,7 +204,7 @@ export function SalesReportingTab({ tenantSlug }: { tenantSlug: string | null })
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Daily breakdown</CardTitle>
+                <CardTitle>Daily Breakdown</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="max-h-80 overflow-auto">
@@ -234,7 +241,7 @@ export function SalesReportingTab({ tenantSlug }: { tenantSlug: string | null })
             <div className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Order status</CardTitle>
+                  <CardTitle>Order Status</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Table>
@@ -269,7 +276,7 @@ export function SalesReportingTab({ tenantSlug }: { tenantSlug: string | null })
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Invoice status</CardTitle>
+                  <CardTitle>Invoice Status</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Table>
@@ -297,14 +304,14 @@ export function SalesReportingTab({ tenantSlug }: { tenantSlug: string | null })
 
           <Card>
             <CardHeader>
-              <CardTitle>Top products</CardTitle>
+              <CardTitle>Top Products</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Product</TableHead>
-                    <TableHead className="text-right">Units sold</TableHead>
+                    <TableHead className="text-right">Units Sold</TableHead>
                     <TableHead className="text-right">Revenue</TableHead>
                   </TableRow>
                 </TableHeader>

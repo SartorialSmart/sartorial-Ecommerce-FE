@@ -244,7 +244,7 @@ export function ProductManagementTab({
           </p>
         </div>
         <Button onClick={onAddProduct}>
-          <Plus className="h-4 w-4" /> Add product
+          <Plus className="h-4 w-4" /> Add Product
         </Button>
       </div>
 
@@ -285,8 +285,8 @@ export function ProductManagementTab({
             <TableRow>
               <TableHead>Product</TableHead>
               <TableHead>Category</TableHead>
-              <TableHead>Pricing rules</TableHead>
-              <TableHead className="text-right">Price from</TableHead>
+              <TableHead>Pricing Rules</TableHead>
+              <TableHead className="text-right">Price From</TableHead>
               <TableHead className="text-right">Variants</TableHead>
               <TableHead>Published</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -399,7 +399,7 @@ export function ProductManagementTab({
             disabled={loading}
             onClick={() => setPage((current) => current + 1)}
           >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Load more
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Load More
           </Button>
         </div>
       )}
@@ -431,7 +431,7 @@ export function ProductManagementTab({
               disabled={busyId !== null}
               onClick={() => void confirmDelete()}
             >
-              {busyId ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Delete product
+              {busyId ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Delete Product
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -724,7 +724,7 @@ function EditProductDialog({
     <Dialog open={product !== null} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
         <DialogHeader>
-          <DialogTitle className="font-display">Edit product</DialogTitle>
+          <DialogTitle className="font-display">Edit Product</DialogTitle>
           <DialogDescription>
             Manage product details, options, variants and images.
           </DialogDescription>
@@ -802,7 +802,7 @@ function EditProductDialog({
                   Cancel
                 </Button>
                 <Button type="submit" disabled={saving}>
-                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Save changes
+                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Save Changes
                 </Button>
               </DialogFooter>
             </form>
@@ -821,7 +821,7 @@ function EditProductDialog({
                 onChange={(event) => setNewOptionType(event.target.value)}
               />
               <Button onClick={() => void addOptionType()} disabled={!newOptionType.trim()}>
-                Add option
+                Add Option
               </Button>
             </div>
             <div className="space-y-3">
@@ -851,7 +851,7 @@ function EditProductDialog({
                       onClick={() => void addOptionValue(type)}
                       disabled={!(newOptionValues[type.id] ?? "").trim()}
                     >
-                      Add value
+                      Add Value
                     </Button>
                   </div>
                 </div>
@@ -864,7 +864,7 @@ function EditProductDialog({
             </div>
             <div className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="pm-generate-price">Default variant price</Label>
+                <Label htmlFor="pm-generate-price">Default Variant Price</Label>
                 <Input
                   id="pm-generate-price"
                   type="number"
@@ -876,7 +876,7 @@ function EditProductDialog({
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="pm-sku-prefix">SKU prefix (optional)</Label>
+                <Label htmlFor="pm-sku-prefix">SKU Prefix (Optional)</Label>
                 <Input
                   id="pm-sku-prefix"
                   placeholder="SKU"
@@ -886,7 +886,7 @@ function EditProductDialog({
               </div>
               <div className="sm:col-span-2">
                 <Button onClick={() => void generateVariants()} disabled={dataLoading}>
-                  <Sparkles className="h-4 w-4" /> Generate variants
+                  <Sparkles className="h-4 w-4" /> Generate Variants
                 </Button>
               </div>
             </div>
@@ -955,7 +955,7 @@ function EditProductDialog({
                   disabled={uploading || !imagePublicId.trim()}
                   onClick={() => void addImage(imagePublicId.trim(), imagePublicId.trim())}
                 >
-                  Add by ID
+                  Add By ID
                 </Button>
               </div>
               <Label className="cursor-pointer rounded-md border bg-background px-4 py-2 text-sm font-medium hover:bg-accent">
@@ -970,7 +970,7 @@ function EditProductDialog({
                     event.target.value = "";
                   }}
                 />
-                {uploading ? "Uploading…" : "Upload image"}
+                {uploading ? "Uploading…" : "Upload Image"}
               </Label>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -1018,7 +1018,7 @@ function EditProductDialog({
         <Dialog open={variantEdit !== null} onOpenChange={(open) => !open && setVariantEdit(null)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Edit variant</DialogTitle>
+              <DialogTitle>Edit Variant</DialogTitle>
               <DialogDescription>{variantEdit?.sku}</DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
@@ -1047,7 +1047,7 @@ function EditProductDialog({
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="variant-cost">Cost price</Label>
+                  <Label htmlFor="variant-cost">Cost Price</Label>
                   <Input
                     id="variant-cost"
                     type="number"
@@ -1084,7 +1084,7 @@ function EditProductDialog({
                 Cancel
               </Button>
               <Button onClick={() => void saveVariant()} disabled={savingVariant}>
-                {savingVariant ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Save variant
+                {savingVariant ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Save Variant
               </Button>
             </DialogFooter>
           </DialogContent>

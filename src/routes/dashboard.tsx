@@ -166,7 +166,7 @@ function DashboardPage() {
         note: k ? `${k.paid_orders} paid` : "No data yet",
       },
       {
-        label: "Avg. order value",
+        label: "Avg. Order Value",
         value: avg !== null ? formatCompactCurrency(avg) : "—",
         note: k ? `${k.customers} customers` : "No data yet",
       },
@@ -191,7 +191,7 @@ function DashboardPage() {
   const displayName = user.full_name.trim() || user.email;
   const firstName = displayName.split(/\s+/)[0] ?? displayName;
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const greeting = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
 
   const handleSignOut = async () => {
     await logout();
@@ -292,11 +292,11 @@ function DashboardPage() {
           <div className="flex gap-3">
             <Button asChild variant="outline">
               <a href={storefrontUrl(storeSlug ?? "your-store")} target="_blank" rel="noreferrer">
-                View storefront
+                View Storefront
               </a>
             </Button>
             <Button onClick={() => setAddProductOpen(true)}>
-              <Plus className="h-4 w-4" /> Add product
+              <Plus className="h-4 w-4" /> Add Product
             </Button>
           </div>
         </div>
@@ -327,12 +327,12 @@ function DashboardPage() {
             <TabsTrigger value="products">Products</TabsTrigger>
             <TabsTrigger value="inventory">Inventory</TabsTrigger>
             <TabsTrigger value="coupons">Coupons</TabsTrigger>
-            <TabsTrigger value="sales">Sales &amp; invoices</TabsTrigger>
-            <TabsTrigger value="sales-reporting">Sales reporting</TabsTrigger>
-            <TabsTrigger value="erp">ERP link</TabsTrigger>
-            <TabsTrigger value="settings">Store settings</TabsTrigger>
+            <TabsTrigger value="sales">Sales &amp; Invoices</TabsTrigger>
+            <TabsTrigger value="sales-reporting">Sales Reporting</TabsTrigger>
+            <TabsTrigger value="erp">ERP Link</TabsTrigger>
+            <TabsTrigger value="settings">Store Settings</TabsTrigger>
 
-            <TabsTrigger value="plan">Plan &amp; billing</TabsTrigger>
+            <TabsTrigger value="plan">Plan &amp; Billing</TabsTrigger>
             <TabsTrigger value="team">Team</TabsTrigger>
           </TabsList>
 
@@ -340,7 +340,7 @@ function DashboardPage() {
             <div className="grid gap-6 lg:grid-cols-3">
               <div className="rounded-xl border bg-card p-6 lg:col-span-2">
                 <div className="flex items-center justify-between">
-                  <h2 className="font-display text-lg font-bold">Revenue — last 14 days</h2>
+                  <h2 className="font-display text-lg font-bold">Revenue — Last 14 Days</h2>
                   {trendBadge && <Badge variant="secondary">{trendBadge}</Badge>}
                 </div>
                 <div className="mt-4 h-72">
@@ -400,7 +400,7 @@ function DashboardPage() {
               </div>
 
               <div className="rounded-xl border bg-card p-6">
-                <h2 className="font-display text-lg font-bold">Fulfillment split</h2>
+                <h2 className="font-display text-lg font-bold">Fulfillment Split</h2>
                 <div className="mt-5 space-y-4">
                   {fulfillment.length === 0 ? (
                     <p className="text-sm text-muted-foreground">No fulfillment data yet.</p>
@@ -430,10 +430,10 @@ function DashboardPage() {
             <div className="grid gap-6 lg:grid-cols-3">
               <div className="rounded-xl border bg-card lg:col-span-2">
                 <div className="flex items-center justify-between p-6 pb-2">
-                  <h2 className="font-display text-lg font-bold">Recent orders</h2>
+                  <h2 className="font-display text-lg font-bold">Recent Orders</h2>
                   <Button asChild variant="ghost" size="sm" className="text-primary">
                     <Link to="/orders" search={{ search: "", status: "all" }}>
-                      View all
+                      View All
                     </Link>
                   </Button>
                 </div>
@@ -494,7 +494,7 @@ function DashboardPage() {
 
               <div className="space-y-6">
                 <div className="rounded-xl border bg-card p-6">
-                  <h2 className="font-display text-lg font-bold">Top products</h2>
+                  <h2 className="font-display text-lg font-bold">Top Products</h2>
                   <div className="mt-4 space-y-3">
                     {(analytics?.top_products ?? []).length === 0 ? (
                       <p className="text-sm text-muted-foreground">No product data yet.</p>
@@ -512,28 +512,28 @@ function DashboardPage() {
                   </div>
                 </div>
                 <div className="rounded-xl border bg-card p-6">
-                  <h2 className="font-display text-lg font-bold">Quick actions</h2>
+                  <h2 className="font-display text-lg font-bold">Quick Actions</h2>
                   <div className="mt-4 grid grid-cols-2 gap-3">
                     <Button
                       variant="secondary"
                       className="h-auto flex-col gap-1 py-3 text-xs"
                       onClick={() => setAddProductOpen(true)}
                     >
-                      <Plus className="h-4 w-4" /> Add product
+                      <Plus className="h-4 w-4" /> Add Product
                     </Button>
                     <Button
                       variant="secondary"
                       className="h-auto flex-col gap-1 py-3 text-xs"
                       onClick={() => setTab("team")}
                     >
-                      <Users className="h-4 w-4" /> Invite teammate
+                      <Users className="h-4 w-4" /> Invite Teammate
                     </Button>
                     <Button
                       variant="secondary"
                       className="h-auto flex-col gap-1 py-3 text-xs"
                       onClick={() => setTab("plan")}
                     >
-                      <Crown className="h-4 w-4" /> Upgrade plan
+                      <Crown className="h-4 w-4" /> Upgrade Plan
                     </Button>
                     <Button
                       asChild
@@ -541,7 +541,7 @@ function DashboardPage() {
                       className="h-auto flex-col gap-1 py-3 text-xs"
                     >
                       <Link to="/designer" search={{ template: undefined }}>
-                        <ChevronUp className="h-4 w-4" /> Open designer
+                        <ChevronUp className="h-4 w-4" /> Open Designer
                       </Link>
                     </Button>
                   </div>
