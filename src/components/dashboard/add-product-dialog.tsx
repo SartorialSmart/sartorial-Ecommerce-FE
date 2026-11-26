@@ -36,9 +36,11 @@ function generateSku(): string {
 export function AddProductDialog({
   open,
   onOpenChange,
+  onCreated,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onCreated?: () => void;
 }) {
   const { user } = useAuth();
   const canManageProducts = user?.role === "seller" || user?.role === "admin";
@@ -132,6 +134,7 @@ export function AddProductDialog({
       });
       resetForm();
       onOpenChange(false);
+      onCreated?.();
     } catch (error) {
       toast.error("Could not create the product", {
         description: error instanceof ApiError ? error.message : "Please try again.",

@@ -14,7 +14,10 @@ import { toast } from "sonner";
 
 import { Logo } from "@/components/brand/logo";
 import { AddProductDialog } from "@/components/dashboard/add-product-dialog";
+import { CouponManagementTab } from "@/components/dashboard/coupon-management";
 import { PlanBillingTab, StoreSettingsTab, TeamTab } from "@/components/dashboard/dashboard-tabs";
+import { InventoryManagementTab } from "@/components/dashboard/inventory-management";
+import { ProductManagementTab } from "@/components/dashboard/product-management";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -78,7 +81,10 @@ function DashboardPage() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const [tab, setTab] = useState("overview");
+  const [headerSearch, setHeaderSearch] = useState("");
   const [addProductOpen, setAddProductOpen] = useState(false);
+  const [productsVersion, setProductsVersion] = useState(0);
+  const [inventoryVersion, setInventoryVersion] = useState(0);
   const [stores, setStores] = useState<TenantStore[]>([]);
   const [storeSlug, setStoreSlug] = useState<string | null>(null);
   const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
@@ -233,9 +239,25 @@ function DashboardPage() {
               </SelectContent>
             </Select>
           </div>
-          <div className="hidden items-center gap-2 rounded-md border border-ink-line px-3 py-2 text-xs text-ink-muted md:flex md:w-64">
-            <Search className="h-3.5 w-3.5" /> Search orders, products…
-          </div>
+          <form
+            className="hidden items-center gap-2 rounded-md border border-ink-line px-3 py-2 text-xs text-ink-muted md:flex md:w-64"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void navigate({
+                to: "/orders",
+                search: { search: headerSearch.trim(), status: "all" },
+              });
+            }}
+          >
+            <Search className="h-3.5 w-3.5" />
+            <input
+              className="w-full bg-transparent outline-none placeholder:text-ink-muted"
+              placeholder="Search orders…"
+              aria-label="Search orders"
+              value={headerSearch}
+              onChange={(event) => setHeaderSearch(event.target.value)}
+            />
+          </form>
           <div className="flex items-center gap-3">
             <button className="rounded-md p-2 hover:bg-ink-line" aria-label="Notifications">
               <Bell className="h-4.5 w-4.5" />
@@ -299,7 +321,11 @@ function DashboardPage() {
         <Tabs value={tab} onValueChange={setTab} className="mt-6">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="products">Products</TabsTrigger>
+            <TabsTrigger value="inventory">Inventory</TabsTrigger>
+            <TabsTrigger value="coupons">Coupons</TabsTrigger>
             <TabsTrigger value="settings">Store settings</TabsTrigger>
+
             <TabsTrigger value="plan">Plan &amp; billing</TabsTrigger>
             <TabsTrigger value="team">Team</TabsTrigger>
           </TabsList>
@@ -399,8 +425,10 @@ function DashboardPage() {
               <div className="rounded-xl border bg-card lg:col-span-2">
                 <div className="flex items-center justify-between p-6 pb-2">
                   <h2 className="font-display text-lg font-bold">Recent orders</h2>
-                  <Button variant="ghost" size="sm" className="text-primary">
-                    View all
+                  <Button asChild variant="ghost" size="sm" className="text-primary">
+                    <Link to="/orders" search={{ search: "", status: "all" }}>
+                      View all
+                    </Link>
                   </Button>
                 </div>
                 <Table>
@@ -426,7 +454,15 @@ function DashboardPage() {
                     ) : (
                       orders.map((o) => (
                         <TableRow key={o.id}>
-                          <TableCell className="font-mono text-xs">{o.number}</TableCell>
+                          <TableCell className="font-mono text-xs">
+                            <Link
+                              to="/orders"
+                              search={{ search: o.number, status: "all" }}
+                              className="hover:underline"
+                            >
+                              {o.number}
+                            </Link>
+                          </TableCell>
                           <TableCell className="text-sm">
                             {o.contact_name || o.contact_email || "—"}
                           </TableCell>
@@ -508,6 +544,22 @@ function DashboardPage() {
             </div>
           </TabsContent>
 
+          <TabsContent value="products" className="mt-6">
+            <ProductManagementTab
+              tenantSlug={storeSlug}
+              refreshKey={productsVersion}
+              onAddProduct={() => setAddProductOpen(true)}
+            />
+          </TabsContent>
+
+          <TabsContent value="inventory" className="mt-6">
+            <InventoryManagementTab tenantSlug={storeSlug} refreshKey={inventoryVersion} />
+          </TabsContent>
+
+          <TabsContent value="coupons" className="mt-6">
+            <CouponManagementTab tenantSlug={storeSlug} />
+          </TabsContent>
+
           <TabsContent value="settings" className="mt-6">
             <StoreSettingsTab tenantSlug={storeSlug} />
           </TabsContent>
@@ -525,7 +577,14 @@ function DashboardPage() {
           Copyright - {new Date().getFullYear()} Sartorial Ecommerce
         </p>
       </main>
-      <AddProductDialog open={addProductOpen} onOpenChange={setAddProductOpen} />
+      <AddProductDialog
+        open={addProductOpen}
+        onOpenChange={setAddProductOpen}
+        onCreated={() => {
+          setProductsVersion((version) => version + 1);
+          setInventoryVersion((version) => version + 1);
+        }}
+      />
     </div>
   );
 }

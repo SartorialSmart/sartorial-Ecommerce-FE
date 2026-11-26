@@ -74,6 +74,43 @@ export interface CreatedProduct {
   slug: string;
 }
 
+export interface AdminProduct {
+  id: string;
+  title: string;
+  slug: string;
+  short_id: string;
+  description: string;
+  category: number | null;
+  brand: number | null;
+  fulfillment_type: string;
+  supplier: string | null;
+  is_active: boolean;
+  is_flash_sale: boolean;
+  discount_percent: string | null;
+  features: unknown;
+  primary_image: string | null;
+  variant_count: number;
+  price_from: string | null;
+  rating_avg: string | null;
+  rating_count: number;
+}
+
+export interface AdminProductPatch {
+  title?: string;
+  description?: string;
+  category?: number | null;
+  is_active?: boolean;
+  is_flash_sale?: boolean;
+  discount_percent?: string;
+}
+
+export interface AdminProductList {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: AdminProduct[];
+}
+
 export interface PricingTier {
   id: string;
   name: string;
