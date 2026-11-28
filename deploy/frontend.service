@@ -1,0 +1,21 @@
+[Unit]
+Description=SartorialEcommerce frontend (Nitro node server)
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=prime
+Group=www-data
+WorkingDirectory=/home/prime/sartorial-Ecommerce-FE
+Environment=NODE_ENV=production
+Environment=NITRO_HOST=127.0.0.1
+Environment=NITRO_PORT=3000
+ExecStart=/usr/bin/node /home/prime/sartorial-Ecommerce-FE/.output/server/index.mjs
+Restart=always
+RestartSec=3
+KillMode=mixed
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target
