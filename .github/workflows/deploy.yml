@@ -11,8 +11,8 @@ jobs:
     env:
       VITE_API_BASE_URL: https://sartorialsmart.com/api/v1
       VITE_TENANT_SLUG: ${{ secrets.VITE_TENANT_SLUG }}
-      DEPLOY_USER: ${{ vars.DEPLOY_USER || 'prime' }}
-      FE_APP_DIR: ${{ vars.FE_APP_DIR || '/home/prime/sartorial-Ecommerce-FE' }}
+      DEPLOY_USER: ${{ vars.DEPLOY_USER || 'caliban' }}
+      FE_APP_DIR: ${{ vars.FE_APP_DIR || '/home/caliban/sartorial-Ecommerce-FE' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
